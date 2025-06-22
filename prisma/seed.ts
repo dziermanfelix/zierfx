@@ -1,21 +1,30 @@
-// prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.track.deleteMany({});
+  await prisma.album.deleteMany({});
+  await prisma.artist.deleteMany({});
+
   const artist = await prisma.artist.upsert({
-    where: { name: 'Lo-Fi Beats' },
+    where: { name: 'Zierfx' },
     update: {},
     create: {
-      name: 'Lo-Fi Beats',
+      name: 'Zierfx',
       albums: {
         create: [
           {
-            name: 'Rainy Days',
-            year: 2023,
+            name: 'Charge The Sea',
+            year: 2025,
             tracks: {
-              create: [{ name: 'Coffee & Code' }, { name: 'Lo-Fi Chill' }, { name: 'Rain in Tokyo' }],
+              create: [
+                { name: 'Out To Sea' },
+                { name: 'Running' },
+                { name: 'Trip' },
+                { name: 'Young Cole' },
+                { name: 'Misfit' },
+              ],
             },
           },
         ],
