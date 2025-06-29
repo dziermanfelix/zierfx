@@ -27,6 +27,19 @@ async function main() {
               ],
             },
           },
+        ],
+      },
+    },
+  });
+  console.log('Seeded artist:', artist.name);
+
+  const artist2 = await prisma.artist.upsert({
+    where: { name: 'Dered Yeebob' },
+    update: {},
+    create: {
+      name: 'Dered Yeebob',
+      albums: {
+        create: [
           {
             name: 'Gladberries',
             year: 2020,
@@ -68,8 +81,7 @@ async function main() {
       },
     },
   });
-
-  console.log('Seeded artist:', artist.name);
+  console.log('Seeded artist:', artist2.name);
 }
 
 main()
