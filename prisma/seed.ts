@@ -28,24 +28,6 @@ async function main() {
             },
           },
           {
-            name: 'Upcoming',
-            year: 2026,
-            tracks: {
-              create: [
-                { name: 'Test 1' },
-                { name: 'Test 2' },
-                { name: 'Test 3' },
-                { name: 'Test 4' },
-                { name: 'Test 5' },
-                { name: 'Test 6' },
-                { name: 'Test 7' },
-                { name: 'Test 8' },
-                { name: 'Test 9' },
-                { name: 'Test 10' },
-              ],
-            },
-          },
-          {
             name: 'Gladberries',
             year: 2020,
             tracks: {
@@ -60,6 +42,25 @@ async function main() {
                 { name: 'Believing' },
                 { name: 'Neighbors' },
                 { name: 'For The Boy' },
+              ],
+            },
+          },
+          {
+            name: 'Simple Holiday',
+            year: 2020,
+            tracks: {
+              create: [
+                { name: 'Mirror Mirror' },
+                { name: 'Trip' },
+                { name: 'Sands' },
+                { name: 'Feel You' },
+                { name: 'Far Away' },
+                { name: 'Feed Your Soul' },
+                { name: 'San Diego' },
+                { name: 'Malibu Canyon' },
+                { name: 'Decline of A Man' },
+                { name: 'To Hell With It' },
+                { name: 'Simple Holiday' },
               ],
             },
           },
