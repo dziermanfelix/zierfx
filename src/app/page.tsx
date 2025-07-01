@@ -13,14 +13,14 @@ export default async function Home() {
 
   return (
     <main className='p-8 space-y-6'>
-      <h1 className='text-3xl font-bold'>Zierfx</h1>
+      <h1 className='text-3xl font-bold'>Music</h1>
 
       {artists.map((artist) => (
-        <div key={artist.id} className='border p-4 rounded-xl shadow'>
-          <h2 className='text-xl font-semibold'>{artist.name}</h2>
+        <div key={artist.id} className='p-2 shadow'>
+          <h2 className='text-xl font-semibold text-center'>{artist.name}</h2>
 
           {artist.albums.map((album) => (
-            <div key={album.id} className='mt-2 ml-4'>
+            <div key={album.id} className='mt-2 ml-4 border m-2 p-4 rounded-xl shadow'>
               <h3 className='text-lg font-medium'>
                 {album.name} ({album.year})
               </h3>
