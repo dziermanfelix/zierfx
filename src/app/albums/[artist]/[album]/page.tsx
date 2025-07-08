@@ -1,5 +1,6 @@
-import { db } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+import { db } from '@/lib/prisma';
+import BackLink from '@/components/BackLink';
 
 type AlbumPageProps = {
   params: {
@@ -39,6 +40,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
 
   return (
     <main className='p-8 space-y-4'>
+      <div className='p-2'>
+        <BackLink />
+      </div>
       <h1 className='text-3xl font-bold'>
         {albumRecord.name} ({albumRecord.year})
       </h1>
