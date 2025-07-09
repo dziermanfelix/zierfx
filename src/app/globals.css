@@ -1,4 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@layer base {
+  button {
+    @apply hover:cursor-pointer;
+  }
+}
 
 :root {
   --background: #ffffff;
