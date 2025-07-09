@@ -90,7 +90,7 @@ export default function Library({ artists }: Props) {
               href={`/albums/${slugify(artist.name)}/${slugify(album.name)}?search=${encodeURIComponent(
                 search
               )}&filter=${filterBy}`}
-              className='block mt-2 ml-4 border m-2 p-4 rounded-xl shadow hover:border-blue-300 transition'
+              className='std-link block mt-2 ml-4 border m-2 p-4 rounded-xl shadow transition'
             >
               <h3 className='text-lg font-medium'>
                 {album.name} ({album.year})

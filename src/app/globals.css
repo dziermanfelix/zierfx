@@ -6,6 +6,12 @@
   }
 }
 
+@layer utilities {
+  .std-link {
+    @apply border hover:border-blue-300;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
