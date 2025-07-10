@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/prisma';
 import BackLink from '@/components/BackLink';
+import { formatDate } from '@/utils/formatting';
 
 type AlbumPageProps = {
   params: {
@@ -44,7 +45,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         <BackLink />
       </div>
       <h1 className='text-3xl font-bold'>
-        {albumRecord.name} ({albumRecord.year})
+        {albumRecord.name} ({formatDate(albumRecord.releaseDate)})
       </h1>
       <h2 className='text-xl text-gray-600'>by {artistRecord.name}</h2>
 

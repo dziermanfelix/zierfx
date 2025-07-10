@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { slugify } from '@/utils/slugify';
 import { Album, Track } from '@prisma/client';
 import { ArtistWithAlbumsAndTracks } from '@/types/music';
+import { formatDate } from '@/utils/formatting';
 
 type Props = {
   artists: ArtistWithAlbumsAndTracks[];
@@ -93,14 +94,7 @@ export default function Library({ artists }: Props) {
               className='std-link block mt-2 ml-4 border m-2 p-4 rounded-xl shadow transition'
             >
               <h3 className='text-lg font-medium'>
-                {album.name} (
-                {new Date(album.releaseDate).toLocaleDateString('en-US', {
-                  timeZone: 'UTC',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                )
+                {album.name} ({formatDate(album.releaseDate)})
               </h3>
               <ul className='list-disc ml-5'>
                 {album.tracks.map((track) => (
