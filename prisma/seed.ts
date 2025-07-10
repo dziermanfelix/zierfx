@@ -19,11 +19,11 @@ async function main() {
             releaseDate: new Date('2025-07-04'),
             tracks: {
               create: [
-                { name: 'Out To Sea' },
-                { name: 'Running' },
-                { name: 'Trip' },
-                { name: 'Young Cole' },
-                { name: 'Misfit' },
+                { name: 'Out To Sea', number: 1 },
+                { name: 'Running', number: 2 },
+                { name: 'Trip', number: 3 },
+                { name: 'Young Cole', number: 4 },
+                { name: 'Misfit', number: 5 },
               ],
             },
           },

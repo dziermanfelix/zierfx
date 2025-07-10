@@ -50,9 +50,11 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         </h1>
         <h2 className='text-xl text-gray-600'>by {artistRecord.name}</h2>
 
-        <ul className='list-disc ml-5 mt-4'>
+        <ul className='list-none mt-4 ml-4'>
           {albumRecord.tracks.map((track) => (
-            <li key={track.id}>{track.name}</li>
+            <li key={track.id}>
+              {track.number}. {track.name}
+            </li>
           ))}
         </ul>
       </div>

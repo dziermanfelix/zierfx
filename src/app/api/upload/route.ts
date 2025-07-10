@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       releaseDate,
       artistId: artistRecord.id,
       tracks: {
-        create: tracks.map((name: string) => ({ name })),
+        create: tracks.map((name: string, index: number) => ({ name, number: index + 1 })),
       },
     },
   });

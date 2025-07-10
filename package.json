@@ -9,9 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "npx prisma generate",
-    "migrate": "prisma migrate dev",
+    "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "clear": "ts-node prisma/clear.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",

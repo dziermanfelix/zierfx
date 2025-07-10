@@ -96,9 +96,11 @@ export default function Library({ artists }: Props) {
                 <h3 className='text-lg font-medium'>
                   {album.name} ({formatDate(album.releaseDate)})
                 </h3>
-                <ul className='list-disc ml-5'>
+                <ul className='list-none ml-4'>
                   {album.tracks.map((track) => (
-                    <li key={track.id}>{track.name}</li>
+                    <li key={track.id}>
+                      {track.number}. {track.name}
+                    </li>
                   ))}
                 </ul>
               </Link>
