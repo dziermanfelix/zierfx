@@ -61,8 +61,8 @@ export default function Library({ artists }: Props) {
   }, [search, filterBy, artists]);
 
   return (
-    <div className='space-y-3'>
-      <div className='flex gap-4 items-center'>
+    <div className='space-y-4'>
+      <div className='ml-5 flex gap-4 items-center'>
         <input
           type='text'
           value={search}
@@ -80,31 +80,32 @@ export default function Library({ artists }: Props) {
           <option value='track'>Track</option>
         </select>
       </div>
+      <div className='max-w-6xl mx-auto space-y-4'>
+        {filteredArtists.map((artist) => (
+          <div key={artist.id} className='p-2 shadow'>
+            <h2 className='text-xl font-semibold text-center'>{artist.name}</h2>
 
-      {filteredArtists.map((artist) => (
-        <div key={artist.id} className='p-2 shadow'>
-          <h2 className='text-xl font-semibold text-center'>{artist.name}</h2>
-
-          {artist.albums.map((album) => (
-            <Link
-              key={album.id}
-              href={`/albums/${slugify(artist.name)}/${slugify(album.name)}?search=${encodeURIComponent(
-                search
-              )}&filter=${filterBy}`}
-              className='std-link block mt-2 ml-4 border m-2 p-4 rounded-xl shadow transition'
-            >
-              <h3 className='text-lg font-medium'>
-                {album.name} ({formatDate(album.releaseDate)})
-              </h3>
-              <ul className='list-disc ml-5'>
-                {album.tracks.map((track) => (
-                  <li key={track.id}>{track.name}</li>
-                ))}
-              </ul>
-            </Link>
-          ))}
-        </div>
-      ))}
+            {artist.albums.map((album) => (
+              <Link
+                key={album.id}
+                href={`/albums/${slugify(artist.name)}/${slugify(album.name)}?search=${encodeURIComponent(
+                  search
+                )}&filter=${filterBy}`}
+                className='std-link block mt-2 ml-4 border m-2 p-4 rounded-xl shadow transition'
+              >
+                <h3 className='text-lg font-medium'>
+                  {album.name} ({formatDate(album.releaseDate)})
+                </h3>
+                <ul className='list-disc ml-5'>
+                  {album.tracks.map((track) => (
+                    <li key={track.id}>{track.name}</li>
+                  ))}
+                </ul>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

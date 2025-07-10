@@ -22,7 +22,7 @@ export default function MenuBar() {
     <div className='flex justify-end'>
       <div className='relative' ref={dropdownRef}>
         <button onClick={() => setOpen((prev) => !prev)} className='std-link border-gray-800 px-3 py-1 rounded'>
-          menu
+          Menu
         </button>
 
         {open && (

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/prisma';
-import BackLink from '@/components/BackLink';
+import LibraryLink from '@/components/LIbraryLink';
 import { formatDate } from '@/utils/formatting';
 
 type AlbumPageProps = {
@@ -42,18 +42,20 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   return (
     <main className='p-8 space-y-4'>
       <div className='p-2'>
-        <BackLink />
+        <LibraryLink />
       </div>
-      <h1 className='text-3xl font-bold'>
-        {albumRecord.name} ({formatDate(albumRecord.releaseDate)})
-      </h1>
-      <h2 className='text-xl text-gray-600'>by {artistRecord.name}</h2>
+      <div className='p-4 max-w-7xl mx-auto rounded'>
+        <h1 className='text-3xl font-bold'>
+          {albumRecord.name} ({formatDate(albumRecord.releaseDate)})
+        </h1>
+        <h2 className='text-xl text-gray-600'>by {artistRecord.name}</h2>
 
-      <ul className='list-disc ml-5 mt-4'>
-        {albumRecord.tracks.map((track) => (
-          <li key={track.id}>{track.name}</li>
-        ))}
-      </ul>
+        <ul className='list-disc ml-5 mt-4'>
+          {albumRecord.tracks.map((track) => (
+            <li key={track.id}>{track.name}</li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }
