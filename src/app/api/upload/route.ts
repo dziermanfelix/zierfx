@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
-  const { artist, album, year, tracks } = await req.json();
+  const { artist, album, releaseDate, tracks } = await req.json();
 
   let artistRecord = await db.artist.findFirst({
     where: { name: { equals: artist, mode: 'insensitive' } },
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const albumRecord = await db.album.create({
     data: {
       name: album,
-      year,
+      releaseDate,
       artistId: artistRecord.id,
       tracks: {
         create: tracks.map((name: string) => ({ name })),

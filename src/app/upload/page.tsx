@@ -5,7 +5,7 @@ import { useState } from 'react';
 export default function UploadPage() {
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
-  const [year, setYear] = useState('');
+  const [releaseDate, setReleaseDate] = useState('');
   const [tracks, setTracks] = useState<string[]>(['']);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -13,7 +13,7 @@ export default function UploadPage() {
 
     const res = await fetch('/api/upload', {
       method: 'POST',
-      body: JSON.stringify({ artist, album, year: Number(year), tracks }),
+      body: JSON.stringify({ artist, album, releaseDate: new Date(releaseDate), tracks }),
       headers: { 'Content-Type': 'application/json' },
     });
 
@@ -21,7 +21,7 @@ export default function UploadPage() {
       alert('Upload successful!');
       setArtist('');
       setAlbum('');
-      setYear('');
+      setReleaseDate('');
       setTracks(['']);
     } else {
       alert('Something went wrong.');
@@ -30,7 +30,7 @@ export default function UploadPage() {
 
   return (
     <main className='p-8 max-w-xl mx-auto space-y-4'>
-      <h1 className='text-2xl font-bold'>Upload New Music</h1>
+      <h1 className='text-2xl font-bold'>New Release</h1>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <input
           type='text'
@@ -49,10 +49,9 @@ export default function UploadPage() {
           required
         />
         <input
-          type='number'
-          placeholder='Year'
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          type='date'
+          value={releaseDate}
+          onChange={(e) => setReleaseDate(e.target.value)}
           className='border p-2 w-full rounded'
           required
         />
