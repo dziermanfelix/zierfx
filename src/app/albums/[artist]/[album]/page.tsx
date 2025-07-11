@@ -50,6 +50,16 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         </h1>
         <h2 className='text-xl text-gray-600'>by {artistRecord.name}</h2>
 
+        <div>
+          {albumRecord.artworkUrl && (
+            <img
+              src={albumRecord.artworkUrl}
+              alt={`${albumRecord.name} artwork`}
+              className='w-full max-w-sm rounded shadow-md'
+            />
+          )}
+        </div>
+
         <ul className='list-none mt-4 ml-4'>
           {albumRecord.tracks.map((track) => (
             <li key={track.id}>

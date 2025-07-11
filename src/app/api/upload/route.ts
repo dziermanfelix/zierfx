@@ -1,8 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
+import { writeFile } from 'fs/promises';
+import path from 'path';
+import { v4 as uuid } from 'uuid';
 
 export async function POST(req: NextRequest) {
-  const { artist, album, releaseDate, tracks } = await req.json();
+  const formData = await req.formData();
+
+  const artist = formData.get('artist') as string;
+  const album = formData.get('album') as string;
+  const releaseDate = formData.get('releaseDate') as string;
+  const artwork = formData.get('artwork') as File | null;
+
+  const tracks: string[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith('tracks[') && typeof value === 'string') {
+      tracks.push(value);
+    }
+  }
+
+  let artworkUrl: string | null = null;
+
+  if (artwork) {
+    const bytes = await artwork.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const filename = `${uuid()}-${artwork.name}`;
+    const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
+
+    await writeFile(uploadPath, buffer);
+    artworkUrl = `/uploads/${filename}`;
+  }
 
   let artistRecord = await db.artist.findFirst({
     where: { name: { equals: artist, mode: 'insensitive' } },
@@ -15,10 +43,11 @@ export async function POST(req: NextRequest) {
   const albumRecord = await db.album.create({
     data: {
       name: album,
-      releaseDate,
+      releaseDate: new Date(releaseDate),
+      artworkUrl,
       artistId: artistRecord.id,
       tracks: {
-        create: tracks.map((name: string, index: number) => ({ name, number: index + 1 })),
+        create: tracks.map((name, i) => ({ name, number: i + 1 })),
       },
     },
   });

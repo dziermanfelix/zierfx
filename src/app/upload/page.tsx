@@ -7,15 +7,26 @@ export default function UploadPage() {
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
+  const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<string[]>(['']);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append('artist', artist);
+    formData.append('album', album);
+    formData.append('releaseDate', releaseDate);
+    if (artwork) {
+      formData.append('artwork', artwork);
+    }
+    tracks.forEach((track, index) => {
+      formData.append(`tracks[${index}]`, track);
+    });
+
     const res = await fetch('/api/upload', {
       method: 'POST',
-      body: JSON.stringify({ artist, album, releaseDate: new Date(releaseDate), tracks }),
-      headers: { 'Content-Type': 'application/json' },
+      body: formData,
     });
 
     if (res.ok) {
@@ -23,6 +34,7 @@ export default function UploadPage() {
       setArtist('');
       setAlbum('');
       setReleaseDate('');
+      setArtwork(null);
       setTracks(['']);
     } else {
       alert('Something went wrong.');
@@ -59,6 +71,13 @@ export default function UploadPage() {
             onChange={(e) => setReleaseDate(e.target.value)}
             className='border p-2 w-full rounded'
             required
+          />
+
+          <input
+            type='file'
+            accept='image/*'
+            onChange={(e) => setArtwork(e.target.files?.[0] || null)}
+            className='border p-2 w-full rounded'
           />
 
           <div className='space-y-2'>
