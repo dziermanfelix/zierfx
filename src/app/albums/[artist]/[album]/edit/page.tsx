@@ -1,16 +1,16 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/prisma';
-import LibraryLink from '@/components/LIbraryLink';
 import AlbumInfo from '@/components/AlbumInfo';
+import LibraryLink from '@/components/LIbraryLink';
 
-type AlbumPageProps = {
+type EditAlbumPageProps = {
   params: {
     artist: string;
     album: string;
   };
 };
 
-export default async function AlbumPage({ params }: AlbumPageProps) {
+export default async function EditAlbumPage({ params }: EditAlbumPageProps) {
   const { artist, album } = params;
 
   const artistRecord = await db.artist.findFirst({
@@ -44,7 +44,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
       <div className='p-2'>
         <LibraryLink />
       </div>
-      <AlbumInfo album={albumRecord} artistName={artistRecord.name} />
+      <AlbumInfo album={albumRecord} artistName={artistRecord.name} showActions />
     </main>
   );
 }
