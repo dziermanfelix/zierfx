@@ -51,11 +51,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     if (res.ok) {
       const updated = await res.json();
       onSaveSuccess(updated.album);
-      const newSlug = slugify(updated.album.name);
-      const currentSlug = slugify(album.name);
-      if (newSlug !== currentSlug) {
-        router.replace(`/albums/${slugify(artistName)}/${newSlug}/edit`);
-      }
+      router.replace(`/albums/${slugify(artistName)}/${slugify(updated.album.name)}/edit`);
     } else {
       alert('Update failed.');
     }
@@ -63,7 +59,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
   };
 
   return (
-    <div>
+    <div className='p-4 flex flex-col max-w-3xl mx-auto rounded'>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <h2 className='text-xl font-semibold'>Editing Album: {album.name}</h2>
 
@@ -75,29 +71,37 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
         />
 
         <div>
-          <label className='block mb-1 font-medium'>Replace Artwork:</label>
-          {album.artworkUrl && <img src={album.artworkUrl} alt='Current Artwork' className='h-32 rounded mb-2' />}
-          <input type='file' accept='image/*' onChange={(e) => setArtwork(e.target.files?.[0] || null)} />
+          <label className='block mb-1 font-medium'>Artwork:</label>
+          <input
+            className='p-1 w-1/4 border rounded'
+            type='file'
+            accept='image/*'
+            onChange={(e) => setArtwork(e.target.files?.[0] || null)}
+          />
         </div>
 
-        <div className='space-y-2'>
+        <div className='space-y-4'>
           <p className='font-medium'>Tracks:</p>
           {tracks.map((track, index) => (
             <div key={track.id} className='space-y-1'>
-              <input
-                type='text'
-                value={track.name}
-                onChange={(e) => {
-                  const updated = [...tracks];
-                  updated[index].name = e.target.value;
-                  setTracks(updated);
-                }}
-                className='border p-2 rounded w-full'
-              />
+              <div className='flex flex-row justify-center items-baseline'>
+                <label className='mr-2'>{track.number}.</label>
+                <input
+                  className='border p-2 rounded w-full'
+                  type='text'
+                  value={track.name}
+                  onChange={(e) => {
+                    const updated = [...tracks];
+                    updated[index].name = e.target.value;
+                    setTracks(updated);
+                  }}
+                />
+              </div>
 
               {/* {track.audioUrl && <audio controls src={track.audioUrl} className='w-full' />} */}
 
               <input
+                className='p-1 ml-5 w-1/4 border rounded'
                 type='file'
                 accept='audio/*'
                 onChange={(e) => {
