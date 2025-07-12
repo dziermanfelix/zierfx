@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { writeFile, unlink } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import path from 'path';
+import { deleteFile } from '@/utils/files';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -70,39 +71,39 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   return NextResponse.json({ success: true, album: updatedAlbum });
 }
 
-export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params;
-  const albumId = Number(id);
+// export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+//   const { id } = await context.params;
+//   const albumId = Number(id);
 
-  const formData = await req.formData();
+//   const formData = await req.formData();
 
-  const name = formData.get('name') as string;
-  const releaseDate = formData.get('releaseDate') as string;
-  const artwork = formData.get('artwork') as File | null;
+//   const name = formData.get('name') as string;
+//   const releaseDate = formData.get('releaseDate') as string;
+//   const artwork = formData.get('artwork') as File | null;
 
-  let artworkUrl: string | undefined;
+//   let artworkUrl: string | undefined;
 
-  if (artwork) {
-    const bytes = await artwork.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const filename = `${Date.now()}-${artwork.name}`;
-    const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
-    await writeFile(uploadPath, buffer);
-    artworkUrl = `/uploads/${filename}`;
-  }
+//   if (artwork) {
+//     const bytes = await artwork.arrayBuffer();
+//     const buffer = Buffer.from(bytes);
+//     const filename = `${Date.now()}-${artwork.name}`;
+//     const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
+//     await writeFile(uploadPath, buffer);
+//     artworkUrl = `/uploads/${filename}`;
+//   }
 
-  const updatedAlbum = await db.album.update({
-    where: { id: Number(albumId) },
-    data: {
-      name,
-      releaseDate: new Date(releaseDate),
-      ...(artworkUrl && { artworkUrl }),
-    },
-    include: { tracks: true },
-  });
+//   const updatedAlbum = await db.album.update({
+//     where: { id: Number(albumId) },
+//     data: {
+//       name,
+//       releaseDate: new Date(releaseDate),
+//       ...(artworkUrl && { artworkUrl }),
+//     },
+//     include: { tracks: true },
+//   });
 
-  return NextResponse.json({ success: true, album: updatedAlbum });
-}
+//   return NextResponse.json({ success: true, album: updatedAlbum });
+// }
 
 export async function DELETE(_: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -118,13 +119,7 @@ export async function DELETE(_: NextRequest, context: { params: Promise<{ id: st
 
   // remove file(s)
   if (album.artworkUrl) {
-    const filePath = path.join(process.cwd(), 'public', album.artworkUrl);
-    try {
-      await unlink(filePath);
-      console.log(`Deleted artwork file: ${filePath}`);
-    } catch (err) {
-      console.warn('Failed to delete artwork file:', err);
-    }
+    await deleteFile(album.artworkUrl);
   }
 
   await db.album.delete({

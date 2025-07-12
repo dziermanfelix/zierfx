@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import path from 'path';
-import { v4 as uuid } from 'uuid';
+import { saveFile } from '@/utils/files';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -20,16 +18,8 @@ export async function POST(req: NextRequest) {
   }
 
   let artworkUrl: string | null = null;
-
   if (artwork) {
-    const bytes = await artwork.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const filename = `${uuid()}-${artwork.name}`;
-    const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
-
-    await writeFile(uploadPath, buffer);
-    artworkUrl = `/uploads/${filename}`;
+    artworkUrl = await saveFile(artwork);
   }
 
   let artistRecord = await db.artist.findFirst({
