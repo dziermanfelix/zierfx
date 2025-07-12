@@ -3,11 +3,16 @@ import path from 'path';
 import { v4 as uuid } from 'uuid';
 import { existsSync } from 'fs';
 
-export async function saveFile(f: File) {
+export function makeAlbumArtworkFileName(filename: string, artist?: string, album?: string) {
+  const extension = filename.split('.').pop();
+  return artist && album ? `${artist}-${album}.${extension}` : undefined;
+}
+
+export async function saveFile(f: File, name?: string) {
   const bytes = await f.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  const filename = `${uuid()}-${f.name}`;
+  const filename = name ? name : `${uuid()}-${f.name}`;
   const artworkUrl = `/uploads/${filename}`;
   const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
 

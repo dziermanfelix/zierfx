@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import { deleteFile, saveFile } from '@/utils/files';
+import { deleteFile, makeAlbumArtworkFileName, saveFile } from '@/utils/files';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   const albumId = Number(id);
 
   const formData = await req.formData();
+  console.log(`~~~ formData = ${JSON.stringify(formData)} !!!!!!`);
+  console.log(formData);
+  const artistName = formData.get('artistName')?.toString();
   const albumName = formData.get('albumName')?.toString();
   const artwork = formData.get('artwork') as File | null;
 
@@ -49,7 +52,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     if (existingArtworkUrl) {
       await deleteFile(existingArtworkUrl);
     }
-    updateData.artworkUrl = await saveFile(artwork);
+    updateData.artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artistName, albumName));
   }
 
   await db.album.update({

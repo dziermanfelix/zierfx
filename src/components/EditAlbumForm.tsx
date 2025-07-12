@@ -31,6 +31,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     setSaving(true);
 
     const formData = new FormData();
+    formData.append('artistName', artistName);
     formData.append('albumName', albumName);
     if (artwork) formData.append('artwork', artwork);
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { saveFile } from '@/utils/files';
+import { makeAlbumArtworkFileName, saveFile } from '@/utils/files';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   let artworkUrl: string | null = null;
   if (artwork) {
-    artworkUrl = await saveFile(artwork);
+    artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artist, album));
   }
 
   let artistRecord = await db.artist.findFirst({
