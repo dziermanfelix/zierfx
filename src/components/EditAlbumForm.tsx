@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, FormEvent } from 'react';
 import { AlbumSlim, TrackSlim } from '@/types/music';
 import AlbumActions from './AlbumActions';
+import { slugify } from '@/utils/slugify';
 
 type AlbumInfoProps = {
   album: AlbumSlim;
@@ -11,6 +13,7 @@ type AlbumInfoProps = {
 };
 
 export default function EditAlbumForm({ album, artistName, onSaveSuccess }: AlbumInfoProps) {
+  const router = useRouter();
   const [albumName, setAlbumName] = useState(album.name);
   const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<TrackSlim[]>(
@@ -47,6 +50,11 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     if (res.ok) {
       const updated = await res.json();
       onSaveSuccess(updated.album);
+      const newSlug = slugify(updated.album.name);
+      const currentSlug = slugify(album.name);
+      if (newSlug !== currentSlug) {
+        router.replace(`/albums/${slugify(artistName)}/${newSlug}/edit`);
+      }
     } else {
       alert('Update failed.');
     }
