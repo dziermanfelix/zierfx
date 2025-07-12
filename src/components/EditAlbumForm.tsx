@@ -62,57 +62,58 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
-      <h2 className='text-xl font-semibold'>Editing Album: {album.name}</h2>
+    <div>
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        <h2 className='text-xl font-semibold'>Editing Album: {album.name}</h2>
 
-      <input
-        type='text'
-        value={albumName}
-        onChange={(e) => setAlbumName(e.target.value)}
-        className='border p-2 w-full rounded'
-      />
+        <input
+          type='text'
+          value={albumName}
+          onChange={(e) => setAlbumName(e.target.value)}
+          className='border p-2 w-full rounded'
+        />
 
-      <div>
-        <label className='block mb-1 font-medium'>Replace Artwork:</label>
-        {album.artworkUrl && <img src={album.artworkUrl} alt='Current Artwork' className='h-32 rounded mb-2' />}
-        <input type='file' accept='image/*' onChange={(e) => setArtwork(e.target.files?.[0] || null)} />
-      </div>
+        <div>
+          <label className='block mb-1 font-medium'>Replace Artwork:</label>
+          {album.artworkUrl && <img src={album.artworkUrl} alt='Current Artwork' className='h-32 rounded mb-2' />}
+          <input type='file' accept='image/*' onChange={(e) => setArtwork(e.target.files?.[0] || null)} />
+        </div>
 
-      <div className='space-y-2'>
-        <p className='font-medium'>Tracks:</p>
-        {tracks.map((track, index) => (
-          <div key={track.id} className='space-y-1'>
-            <input
-              type='text'
-              value={track.name}
-              onChange={(e) => {
-                const updated = [...tracks];
-                updated[index].name = e.target.value;
-                setTracks(updated);
-              }}
-              className='border p-2 rounded w-full'
-            />
+        <div className='space-y-2'>
+          <p className='font-medium'>Tracks:</p>
+          {tracks.map((track, index) => (
+            <div key={track.id} className='space-y-1'>
+              <input
+                type='text'
+                value={track.name}
+                onChange={(e) => {
+                  const updated = [...tracks];
+                  updated[index].name = e.target.value;
+                  setTracks(updated);
+                }}
+                className='border p-2 rounded w-full'
+              />
 
-            {/* {track.audioUrl && <audio controls src={track.audioUrl} className='w-full' />} */}
+              {/* {track.audioUrl && <audio controls src={track.audioUrl} className='w-full' />} */}
 
-            <input
-              type='file'
-              accept='audio/*'
-              onChange={(e) => {
-                const updated = [...tracks];
-                // updated[index].file = e.target.files?.[0] || null;
-                setTracks(updated);
-              }}
-            />
-          </div>
-        ))}
-      </div>
+              <input
+                type='file'
+                accept='audio/*'
+                onChange={(e) => {
+                  const updated = [...tracks];
+                  // updated[index].file = e.target.files?.[0] || null;
+                  setTracks(updated);
+                }}
+              />
+            </div>
+          ))}
+        </div>
 
-      <button disabled={saving} type='submit' className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
-        {saving ? 'Saving...' : 'Save Changes'}
-      </button>
-
+        <button disabled={saving} type='submit' className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+      </form>
       <AlbumActions albumId={Number(album.id)} />
-    </form>
+    </div>
   );
 }

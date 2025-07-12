@@ -1,6 +1,7 @@
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { v4 as uuid } from 'uuid';
+import { existsSync } from 'fs';
 
 export async function saveFile(f: File) {
   const bytes = await f.arrayBuffer();
@@ -8,7 +9,6 @@ export async function saveFile(f: File) {
 
   const filename = `${uuid()}-${f.name}`;
   const artworkUrl = `/uploads/${filename}`;
-
   const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
 
   await writeFile(uploadPath, buffer);
@@ -18,10 +18,7 @@ export async function saveFile(f: File) {
 
 export async function deleteFile(f: string) {
   const filePath = path.join(process.cwd(), 'public', f);
-  try {
+  if (existsSync(filePath)) {
     await unlink(filePath);
-    console.log(`Deleted artwork file: ${filePath}`);
-  } catch (err) {
-    console.warn('Failed to delete artwork file:', err);
   }
 }
