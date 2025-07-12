@@ -1,41 +1,21 @@
-import { db } from '@/lib/prisma';
+import { getAlbumAndArtistFromSlugs } from '@/lib/lookup';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, context: { params: Promise<{ artist: string; album: string }> }) {
-  const { artist, album } = await context.params;
+  const { artist: artistParam, album: albumParam } = await context.params;
 
-  const artistRecord = await db.artist.findFirst({
-    where: {
-      name: {
-        equals: artist.replace(/-/g, ' '),
-        mode: 'insensitive',
-      },
-    },
-  });
+  const { artist, album } = await getAlbumAndArtistFromSlugs(artistParam, albumParam);
 
-  if (!artistRecord) {
+  if (!artist) {
     return NextResponse.json({ error: 'Artist not found' }, { status: 404 });
   }
 
-  const albumRecord = await db.album.findFirst({
-    where: {
-      name: {
-        equals: album.replace(/-/g, ' '),
-        mode: 'insensitive',
-      },
-      artistId: artistRecord.id,
-    },
-    include: {
-      tracks: true,
-    },
-  });
-
-  if (!albumRecord) {
+  if (!album) {
     return NextResponse.json({ error: 'Album not found' }, { status: 404 });
   }
 
   return NextResponse.json({
-    album: albumRecord,
-    artistName: artistRecord.name,
+    album: album,
+    artistName: artist.name,
   });
 }
