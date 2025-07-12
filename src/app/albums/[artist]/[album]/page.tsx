@@ -4,14 +4,14 @@ import LibraryLink from '@/components/LIbraryLink';
 import AlbumInfo from '@/components/AlbumInfo';
 
 type AlbumPageProps = {
-  params: {
+  params: Promise<{
     artist: string;
     album: string;
-  };
+  }>;
 };
 
 export default async function AlbumPage({ params }: AlbumPageProps) {
-  const { artist, album } = params;
+  const { artist, album } = await params;
 
   const artistRecord = await db.artist.findFirst({
     where: {

@@ -1,50 +1,46 @@
-import { notFound } from 'next/navigation';
-import { db } from '@/lib/prisma';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import AlbumInfo from '@/components/AlbumInfo';
 import LibraryLink from '@/components/LIbraryLink';
+import EditAlbumForm from '@/components/EditAlbumForm';
 
-type EditAlbumPageProps = {
-  params: {
-    artist: string;
-    album: string;
-  };
-};
+export default function EditAlbumPage() {
+  const { artist, album } = useParams() as { artist: string; album: string };
+  const [albumData, setAlbumData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function EditAlbumPage({ params }: EditAlbumPageProps) {
-  const { artist, album } = params;
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/album/slug/${artist}/${album}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.album) {
+          setAlbumData(data);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [artist, album]);
 
-  const artistRecord = await db.artist.findFirst({
-    where: {
-      name: {
-        equals: artist.replace(/-/g, ' '),
-        mode: 'insensitive',
-      },
-    },
-  });
-
-  if (!artistRecord) return notFound();
-
-  const albumRecord = await db.album.findFirst({
-    where: {
-      name: {
-        equals: album.replace(/-/g, ' '),
-        mode: 'insensitive',
-      },
-      artistId: artistRecord.id,
-    },
-    include: {
-      tracks: true,
-    },
-  });
-
-  if (!albumRecord) return notFound();
+  if (loading) return <div className='p-8'>Loading...</div>;
+  if (!albumData) return <div className='p-8 text-red-500'>Album not found.</div>;
 
   return (
     <main className='p-8 space-y-4'>
       <div className='p-2'>
         <LibraryLink />
       </div>
-      <AlbumInfo album={albumRecord} artistName={artistRecord.name} showActions />
+
+      <div className='border rounded p-2 m-2'>
+        <h1>Page Preview:</h1>
+        <AlbumInfo album={albumData.album} artistName={albumData.artistName} />
+      </div>
+      <EditAlbumForm
+        album={albumData.album}
+        artistName={albumData.artistName}
+        onSaveSuccess={(updatedData) => setAlbumData({ ...albumData, album: updatedData })}
+      />
     </main>
   );
 }

@@ -1,20 +1,13 @@
 import AlbumCover from '@/components/AlbumCover';
 import { formatDate } from '@/utils/formatting';
-import AlbumActions from './AlbumActions';
+import { AlbumSlim } from '@/types/music';
 
 interface AlbumInfoProps {
-  album: {
-    id: number;
-    name: string;
-    releaseDate: Date;
-    artworkUrl: string | null;
-    tracks: { id: number; name: string; number: number }[];
-  };
+  album: AlbumSlim;
   artistName: string;
-  showActions?: boolean;
 }
 
-export default function AlbumInfo({ album, artistName, showActions = false }: AlbumInfoProps) {
+export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
   return (
     <div className='p-4 flex flex-col max-w-7xl mx-auto rounded'>
       <div className='flex flex-row'>
@@ -42,8 +35,6 @@ export default function AlbumInfo({ album, artistName, showActions = false }: Al
           </li>
         ))}
       </ul>
-
-      {showActions && <AlbumActions albumId={Number(album.id)} />}
     </div>
   );
 }

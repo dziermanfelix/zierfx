@@ -3,8 +3,77 @@ import { db } from '@/lib/prisma';
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const albumId = params.id;
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const albumId = Number(id);
+
+  const formData = await req.formData();
+  const albumName = formData.get('albumName')?.toString();
+  const artworkFile = formData.get('artwork') as File | null;
+
+  const tracks = [];
+  for (let i = 0; ; i++) {
+    const id = formData.get(`tracks[${i}][id]`);
+    const name = formData.get(`tracks[${i}][name]`);
+    const file = formData.get(`tracks[${i}][file]`);
+
+    if (!id || !name) break;
+
+    let audioUrl: string | null = null;
+    if (file instanceof File) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filePath = path.join(process.cwd(), 'public', 'uploads', file.name);
+      await writeFile(filePath, buffer);
+      audioUrl = `/uploads/${file.name}`;
+    }
+
+    tracks.push({
+      id: Number(id),
+      name: name.toString(),
+      audioUrl,
+    });
+  }
+
+  const updateData: { name?: string; artworkUrl?: string } = {};
+
+  if (albumName) updateData.name = albumName;
+
+  if (artworkFile instanceof File) {
+    const bytes = await artworkFile.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const filePath = path.join(process.cwd(), 'public', 'uploads', artworkFile.name);
+    await writeFile(filePath, buffer);
+    updateData.artworkUrl = `/uploads/${artworkFile.name}`;
+  }
+
+  await db.album.update({
+    where: { id: albumId },
+    data: updateData,
+  });
+
+  for (const track of tracks) {
+    await db.track.update({
+      where: { id: track.id },
+      data: {
+        name: track.name,
+        ...(track.audioUrl && { audioUrl: track.audioUrl }),
+      },
+    });
+  }
+
+  const updatedAlbum = await db.album.findUnique({
+    where: { id: albumId },
+    include: { tracks: true },
+  });
+
+  return NextResponse.json({ success: true, album: updatedAlbum });
+}
+
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const albumId = Number(id);
+
   const formData = await req.formData();
 
   const name = formData.get('name') as string;
@@ -22,21 +91,22 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     artworkUrl = `/uploads/${filename}`;
   }
 
-  const updated = await db.album.update({
+  const updatedAlbum = await db.album.update({
     where: { id: Number(albumId) },
     data: {
       name,
       releaseDate: new Date(releaseDate),
       ...(artworkUrl && { artworkUrl }),
     },
+    include: { tracks: true },
   });
 
-  return NextResponse.json({ success: true, album: updated });
+  return NextResponse.json({ success: true, album: updatedAlbum });
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  console.log('ok, delete was called');
-  const albumId = params.id;
+export async function DELETE(_: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const albumId = Number(id);
 
   const album = await db.album.findUnique({
     where: { id: Number(albumId) },
