@@ -2,10 +2,11 @@ import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { v4 as uuid } from 'uuid';
 import { existsSync } from 'fs';
+import { slugify } from './slugify';
 
 export function makeAlbumArtworkFileName(filename: string, artist?: string, album?: string) {
   const extension = filename.split('.').pop();
-  return artist && album ? `${artist}-${album}.${extension}` : undefined;
+  return artist && album ? `${slugify(`${artist}-${album}`)}.${extension}` : undefined;
 }
 
 export async function saveFile(f: File, name?: string) {
