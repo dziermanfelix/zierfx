@@ -86,6 +86,10 @@ export async function DELETE(_: NextRequest, context: { params: Promise<{ id: st
     where: { id: albumId },
   });
 
+  const tracks = await db.track.findMany({
+    where: { albumId: albumId },
+  });
+
   if (!album) {
     return NextResponse.json({ success: false, error: 'Album not found' }, { status: 404 });
   }
@@ -93,6 +97,10 @@ export async function DELETE(_: NextRequest, context: { params: Promise<{ id: st
   if (album.artworkUrl) {
     await deleteFile(album.artworkUrl);
   }
+
+  tracks.map((track) => {
+    deleteFile(track.audioUrl);
+  });
 
   await db.album.delete({
     where: { id: Number(albumId) },
