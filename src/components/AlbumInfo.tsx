@@ -5,6 +5,7 @@ import AlbumCover from '@/components/AlbumCover';
 import { formatDate } from '@/utils/formatting';
 import { AlbumSlim } from '@/types/music';
 import AudioPlayer from '@/components/AudioPlayer';
+import { usePlayer } from '@/contexts/PlayerContext';
 
 interface AlbumInfoProps {
   album: AlbumSlim;
@@ -12,19 +13,19 @@ interface AlbumInfoProps {
 }
 
 export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentTrackId, setCurrentTrackId] = useState<number | null>(null);
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
+  const { setPlaylistAndPlay } = usePlayer();
 
   const handlePlay = (index: number) => {
-    setCurrentTrackIndex(index);
+    const tracks = album.tracks.map((t) => ({ src: t.audioUrl, name: t.name }));
+    setPlaylistAndPlay(tracks, index);
   };
 
   const handleTrackEnd = () => {
     if (currentTrackIndex !== null && currentTrackIndex + 1 < album.tracks.length) {
       setCurrentTrackIndex(currentTrackIndex + 1);
     } else {
-      setCurrentTrackIndex(null); // end of album
+      setCurrentTrackIndex(null);
     }
   };
 
