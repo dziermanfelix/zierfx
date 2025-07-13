@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { deleteFile, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
+import { deleteFile, getTrackLength, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -22,14 +22,27 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     if (!id || !name) break;
 
     let audioUrl: string | null = null;
+    let length: number | null = null;
+
     if (file instanceof File) {
+      const existingTrack = await db.track.findUnique({
+        where: { id: Number(id) },
+      });
+
+      const existingTrackAudioUrl = existingTrack?.audioUrl;
+      if (existingTrackAudioUrl) {
+        await deleteFile(existingTrackAudioUrl);
+      }
+
       audioUrl = await saveFile(file, makeTrackFileName(file.name, number, artistName, albumName, name));
+      length = await getTrackLength(file);
     }
 
     tracks.push({
       id: Number(id),
       name: name.toString(),
       audioUrl,
+      length,
     });
   }
 
@@ -48,6 +61,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     if (existingArtworkUrl) {
       await deleteFile(existingArtworkUrl);
     }
+
     updateData.artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artistName, albumName));
   }
 
@@ -62,6 +76,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       data: {
         name: track.name,
         ...(track.audioUrl && { audioUrl: track.audioUrl }),
+        ...(track.length && { length: track.length }),
       },
     });
   }

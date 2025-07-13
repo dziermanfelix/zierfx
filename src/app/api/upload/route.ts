@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
+import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -44,13 +44,18 @@ export async function POST(req: NextRequest) {
       .sort(([a], [b]) => a - b)
       .map(async ([i, { name, file }]) => {
         let audioUrl: string | null = null;
-        if (file) {
+        let length: number | null = null;
+
+        if (file instanceof File) {
           audioUrl = await saveFile(file, `${makeTrackFileName(file.name, i + 1, artistString, albumString, name)}`);
+          length = await getTrackLength(file);
         }
+
         return {
           name,
           number: i + 1,
           audioUrl,
+          length,
         };
       })
   );

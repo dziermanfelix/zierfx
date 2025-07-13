@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import AlbumCover from '@/components/AlbumCover';
-import { formatDate } from '@/utils/formatting';
+import { formatDate, formatTime } from '@/utils/formatting';
 import { AlbumSlim } from '@/types/music';
 import AudioPlayer from '@/components/AudioPlayer';
 import { usePlayer } from '@/contexts/PlayerContext';
@@ -65,7 +65,7 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
               <div>{track.name}</div>
             </div>
             <div className='flex flex-row space-x-2 items-center'>
-              <div>TIME</div>
+              <div>{formatTime(track.length)}</div>
             </div>
           </li>
         ))}

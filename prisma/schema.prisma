@@ -28,6 +28,7 @@ model Track {
   number    Int
   name      String
   audioUrl  String?
+  length    Int?
   album     Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
   albumId   Int
 }
