@@ -1,6 +1,10 @@
+'use client';
+
+import { useRef, useState } from 'react';
 import AlbumCover from '@/components/AlbumCover';
 import { formatDate } from '@/utils/formatting';
 import { AlbumSlim } from '@/types/music';
+import AudioPlayer from '@/components/AudioPlayer';
 
 interface AlbumInfoProps {
   album: AlbumSlim;
@@ -8,6 +12,22 @@ interface AlbumInfoProps {
 }
 
 export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [currentTrackId, setCurrentTrackId] = useState<number | null>(null);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
+
+  const handlePlay = (index: number) => {
+    setCurrentTrackIndex(index);
+  };
+
+  const handleTrackEnd = () => {
+    if (currentTrackIndex !== null && currentTrackIndex + 1 < album.tracks.length) {
+      setCurrentTrackIndex(currentTrackIndex + 1);
+    } else {
+      setCurrentTrackIndex(null); // end of album
+    }
+  };
+
   return (
     <div className='p-4 flex flex-col max-w-7xl mx-auto rounded'>
       <div className='flex flex-row'>
@@ -22,19 +42,53 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
       </div>
 
       <ul className='list-none mt-4 ml-4 rounded p-2'>
-        {album.tracks.map((track) => (
-          <li key={track.id} className='flex flex-row border rounded p-3 mb-2 justify-between'>
-            <div className='flex flex-row space-x-2'>
-              <div>{track.number}</div>
+        {album.tracks.map((track, index) => (
+          <li
+            key={track.id}
+            className='group flex flex-row border rounded p-3 mb-2 justify-between hover:border-blue-400'
+            onDoubleClick={() => handlePlay(index)}
+          >
+            <div className='flex flex-row space-x-2 items-center'>
+              <div className='block group-hover:hidden'>{track.number}</div>
+
+              <button
+                className='hidden group-hover:inline-block transition-opacity duration-200'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlay(index);
+                }}
+              >
+                {currentTrackIndex === index ? 'Pause' : 'Play'}
+              </button>
+
               <div>{track.name}</div>
             </div>
-            <div className='flex flex-row space-x-2'>
-              <button className='std-link rounded'>PLAY</button>
+            <div className='flex flex-row space-x-2 items-center'>
               <div>TIME</div>
             </div>
           </li>
         ))}
       </ul>
+
+      {currentTrackIndex !== null && (
+        <AudioPlayer
+          src={album.tracks[currentTrackIndex].audioUrl}
+          trackName={album.tracks[currentTrackIndex].name}
+          onEnded={handleTrackEnd}
+          onNext={() => {
+            setCurrentTrackIndex((prevIndex) =>
+              typeof prevIndex === 'number' ? (prevIndex + 1) % album.tracks.length : 0
+            );
+          }}
+          onPrevious={() => {
+            setCurrentTrackIndex((prevIndex) =>
+              typeof prevIndex === 'number'
+                ? (prevIndex - 1 + album.tracks.length) % album.tracks.length
+                : album.tracks.length - 1
+            );
+          }}
+        />
+      )}
     </div>
   );
 }
