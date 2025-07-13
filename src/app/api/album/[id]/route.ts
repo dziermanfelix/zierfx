@@ -9,10 +9,9 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   const albumId = Number(id);
 
   const formData = await req.formData();
-  console.log(`~~~ formData = ${JSON.stringify(formData)} !!!!!!`);
-  console.log(formData);
   const artistName = formData.get('artistName')?.toString();
   const albumName = formData.get('albumName')?.toString();
+  const releaseDate = formData.get('releaseDate') as string;
   const artwork = formData.get('artwork') as File | null;
 
   const tracks = [];
@@ -39,9 +38,11 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     });
   }
 
-  const updateData: { name?: string; artworkUrl?: string } = {};
+  const updateData: { name?: string; releaseDate?: Date; artworkUrl?: string } = {};
 
   if (albumName) updateData.name = albumName;
+
+  if (releaseDate) updateData.releaseDate = new Date(releaseDate);
 
   if (artwork instanceof File && artwork.size > 0) {
     const existingAlbum = await db.album.findUnique({
@@ -99,7 +100,7 @@ export async function DELETE(_: NextRequest, context: { params: Promise<{ id: st
   }
 
   tracks.map((track) => {
-    deleteFile(track.audioUrl);
+    if (track.audioUrl) deleteFile(track.audioUrl);
   });
 
   await db.album.delete({

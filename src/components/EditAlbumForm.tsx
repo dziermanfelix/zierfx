@@ -15,6 +15,7 @@ type AlbumInfoProps = {
 export default function EditAlbumForm({ album, artistName, onSaveSuccess }: AlbumInfoProps) {
   const router = useRouter();
   const [albumName, setAlbumName] = useState(album.name);
+  const [releaseDate, setReleaseDate] = useState(album.releaseDate.toString().slice(0, 10));
   const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<TrackSlim[]>(
     album.tracks.map((track) => ({
@@ -33,6 +34,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     const formData = new FormData();
     formData.append('artistName', artistName);
     formData.append('albumName', albumName);
+    formData.append('releaseDate', String(releaseDate));
     if (artwork) formData.append('artwork', artwork);
 
     tracks.forEach((track, index) => {
@@ -67,6 +69,13 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
           type='text'
           value={albumName}
           onChange={(e) => setAlbumName(e.target.value)}
+          className='border p-2 w-full rounded'
+        />
+
+        <input
+          type='date'
+          value={String(releaseDate)}
+          onChange={(e) => setReleaseDate(e.target.value)}
           className='border p-2 w-full rounded'
         />
 

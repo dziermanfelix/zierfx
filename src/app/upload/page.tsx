@@ -61,6 +61,7 @@ export default function UploadPage() {
             className='border p-2 w-full rounded'
             required
           />
+
           <input
             type='text'
             placeholder='Album Name'
@@ -69,6 +70,7 @@ export default function UploadPage() {
             className='border p-2 w-full rounded'
             required
           />
+
           <input
             type='date'
             value={releaseDate}
