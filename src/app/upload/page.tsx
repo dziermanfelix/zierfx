@@ -89,21 +89,36 @@ export default function UploadPage() {
           <div className='space-y-2'>
             <p className='font-medium'>Tracks:</p>
             {tracks.map((track, index) => (
-              <div key={index} className='space-y-1'>
-                <input
-                  type='text'
-                  placeholder={`Track ${index + 1} name`}
-                  value={track.name}
-                  onChange={(e) => {
-                    const updated = [...tracks];
-                    updated[index].name = e.target.value;
-                    setTracks(updated);
-                  }}
-                  className='border p-2 rounded w-full'
-                  required
-                />
+              <div key={index} className='p-1 w-full space-y-1'>
+                <div className='flex flex-row space-x-2'>
+                  <input
+                    type='text'
+                    placeholder={`Track ${index + 1} name`}
+                    value={track.name}
+                    onChange={(e) => {
+                      const updated = [...tracks];
+                      updated[index].name = e.target.value;
+                      setTracks(updated);
+                    }}
+                    className='border p-2 rounded w-full'
+                    required
+                  />
+
+                  <button
+                    type='button'
+                    className='std-link rounded p-1 text-red-600 text-sm'
+                    onClick={() => {
+                      const updated = [...tracks];
+                      updated.splice(index, 1);
+                      setTracks(updated);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
 
                 <input
+                  className='border p-1 text-sm rounded w-1/8'
                   type='file'
                   accept='audio/*'
                   onChange={(e) => {
@@ -111,21 +126,8 @@ export default function UploadPage() {
                     updated[index].file = e.target.files?.[0] || null;
                     setTracks(updated);
                   }}
-                  className='border p-2 rounded w-full'
                   required
                 />
-
-                <button
-                  type='button'
-                  onClick={() => {
-                    const updated = [...tracks];
-                    updated.splice(index, 1);
-                    setTracks(updated);
-                  }}
-                  className='text-red-600 text-sm underline'
-                >
-                  Delete
-                </button>
               </div>
             ))}
             <button

@@ -25,12 +25,12 @@ export async function saveFile(f: File, name?: string) {
   const buffer = Buffer.from(bytes);
 
   const filename = name ? name : `${uuid()}-${f.name}`;
-  const artworkUrl = `/uploads/${filename}`;
+  const fileName = `/uploads/${filename}`;
   const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
 
   await writeFile(uploadPath, buffer);
 
-  return artworkUrl;
+  return fileName;
 }
 
 export async function deleteFile(f: string) {

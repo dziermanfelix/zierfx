@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import path from 'path';
-import { deleteFile, makeAlbumArtworkFileName, saveFile } from '@/utils/files';
+import { deleteFile, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -17,18 +15,15 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   const tracks = [];
   for (let i = 0; ; i++) {
     const id = formData.get(`tracks[${i}][id]`);
-    const name = formData.get(`tracks[${i}][name]`);
+    const name = formData.get(`tracks[${i}][name]`)?.toString();
+    const number = Number(formData.get(`tracks[${i}][number]`));
     const file = formData.get(`tracks[${i}][file]`);
 
     if (!id || !name) break;
 
     let audioUrl: string | null = null;
     if (file instanceof File) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const filePath = path.join(process.cwd(), 'public', 'uploads', file.name);
-      await writeFile(filePath, buffer);
-      audioUrl = `/uploads/${file.name}`;
+      audioUrl = await saveFile(file, makeTrackFileName(file.name, number, artistName, albumName, name));
     }
 
     tracks.push({

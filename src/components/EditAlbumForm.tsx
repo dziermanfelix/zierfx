@@ -12,16 +12,18 @@ type AlbumInfoProps = {
   onSaveSuccess: (updatedAlbum: AlbumSlim) => void;
 };
 
+type EditableTrack = TrackSlim & {
+  file?: File | null;
+};
+
 export default function EditAlbumForm({ album, artistName, onSaveSuccess }: AlbumInfoProps) {
   const router = useRouter();
   const [albumName, setAlbumName] = useState(album.name);
   const [releaseDate, setReleaseDate] = useState(album.releaseDate.toString().slice(0, 10));
   const [artwork, setArtwork] = useState<File | null>(null);
-  const [tracks, setTracks] = useState<TrackSlim[]>(
+  const [tracks, setTracks] = useState<EditableTrack[]>(
     album.tracks.map((track) => ({
-      id: track.id,
-      number: track.number,
-      name: track.name,
+      ...track,
       file: null,
     }))
   );
@@ -40,9 +42,10 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     tracks.forEach((track, index) => {
       formData.append(`tracks[${index}][id]`, track.id.toString());
       formData.append(`tracks[${index}][name]`, track.name);
-      // if (track.file) {
-      //   formData.append(`tracks[${index}][file]`, track.file);
-      // }
+      formData.append(`tracks[${index}][number]`, track.number);
+      if (track.file) {
+        formData.append(`tracks[${index}][file]`, track.file);
+      }
     });
 
     const res = await fetch(`/api/album/${album.id}`, {
@@ -89,36 +92,37 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
           />
         </div>
 
-        <div className='space-y-4'>
+        <div className='space-y-1'>
           <p className='font-medium'>Tracks:</p>
           {tracks.map((track, index) => (
-            <div key={track.id} className='space-y-1'>
-              <div className='flex flex-row justify-center items-baseline'>
+            <div key={track.id} className='p-1 w-full space-y-1'>
+              <div className='flex flex-row p-1 justify-center items-baseline'>
                 <label className='mr-2'>{track.number}.</label>
-                <input
-                  className='border p-2 rounded w-full'
-                  type='text'
-                  value={track.name}
-                  onChange={(e) => {
-                    const updated = [...tracks];
-                    updated[index].name = e.target.value;
-                    setTracks(updated);
-                  }}
-                />
+
+                <div className='flex flex-col w-full'>
+                  <input
+                    className='border mb-1 p-2 rounded w-full'
+                    type='text'
+                    value={track.name}
+                    onChange={(e) => {
+                      const updated = [...tracks];
+                      updated[index].name = e.target.value;
+                      setTracks(updated);
+                    }}
+                  />
+
+                  <input
+                    className='border p-1 text-sm rounded w-1/8'
+                    type='file'
+                    accept='audio/*'
+                    onChange={(e) => {
+                      const updated = [...tracks];
+                      updated[index].file = e.target.files?.[0] || null;
+                      setTracks(updated);
+                    }}
+                  />
+                </div>
               </div>
-
-              {/* {track.audioUrl && <audio controls src={track.audioUrl} className='w-full' />} */}
-
-              <input
-                className='p-1 ml-5 w-1/4 border rounded'
-                type='file'
-                accept='audio/*'
-                onChange={(e) => {
-                  const updated = [...tracks];
-                  // updated[index].file = e.target.files?.[0] || null;
-                  setTracks(updated);
-                }}
-              />
             </div>
           ))}
         </div>

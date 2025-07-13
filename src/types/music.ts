@@ -4,6 +4,7 @@ export type TrackSlim = {
   id: number;
   number: number;
   name: string;
+  audioUrl: string;
 };
 
 export type AlbumSlim = {
