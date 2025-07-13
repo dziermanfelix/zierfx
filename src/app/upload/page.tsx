@@ -1,27 +1,36 @@
 'use client';
 
-import LibraryLink from '@/components/LIbraryLink';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import LibraryLink from '@/components/LIbraryLink';
+import { routes } from '@/utils/routes';
 
 export default function UploadPage() {
+  const router = useRouter();
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [artwork, setArtwork] = useState<File | null>(null);
-  const [tracks, setTracks] = useState<string[]>(['']);
+  const [tracks, setTracks] = useState<{ name: string; file: File | null }[]>([{ name: '', file: null }]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData();
+
     formData.append('artist', artist);
     formData.append('album', album);
     formData.append('releaseDate', releaseDate);
+
     if (artwork) {
       formData.append('artwork', artwork);
     }
+
     tracks.forEach((track, index) => {
-      formData.append(`tracks[${index}]`, track);
+      formData.append(`tracks[${index}][name]`, track.name);
+      if (track.file) {
+        formData.append(`tracks[${index}][file]`, track.file);
+      }
     });
 
     const res = await fetch('/api/upload', {
@@ -30,12 +39,7 @@ export default function UploadPage() {
     });
 
     if (res.ok) {
-      alert('Upload successful!');
-      setArtist('');
-      setAlbum('');
-      setReleaseDate('');
-      setArtwork(null);
-      setTracks(['']);
+      router.replace(routes.HOME);
     } else {
       alert('Something went wrong.');
     }
@@ -83,19 +87,32 @@ export default function UploadPage() {
           <div className='space-y-2'>
             <p className='font-medium'>Tracks:</p>
             {tracks.map((track, index) => (
-              <div key={index} className='flex items-center gap-2'>
+              <div key={index} className='space-y-1'>
                 <input
                   type='text'
-                  placeholder={`Track ${index + 1}`}
-                  value={track}
+                  placeholder={`Track ${index + 1} name`}
+                  value={track.name}
                   onChange={(e) => {
                     const updated = [...tracks];
-                    updated[index] = e.target.value;
+                    updated[index].name = e.target.value;
                     setTracks(updated);
                   }}
                   className='border p-2 rounded w-full'
                   required
                 />
+
+                <input
+                  type='file'
+                  accept='audio/*'
+                  onChange={(e) => {
+                    const updated = [...tracks];
+                    updated[index].file = e.target.files?.[0] || null;
+                    setTracks(updated);
+                  }}
+                  className='border p-2 rounded w-full'
+                  required
+                />
+
                 <button
                   type='button'
                   onClick={() => {
@@ -111,7 +128,7 @@ export default function UploadPage() {
             ))}
             <button
               type='button'
-              onClick={() => setTracks([...tracks, ''])}
+              onClick={() => setTracks([...tracks, { name: '', file: null }])}
               className='text-blue-600 underline text-sm'
             >
               + Add Track

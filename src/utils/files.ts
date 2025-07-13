@@ -6,7 +6,18 @@ import { slugify } from './slugify';
 
 export function makeAlbumArtworkFileName(filename: string, artist?: string, album?: string) {
   const extension = filename.split('.').pop();
-  return artist && album ? `${slugify(`${artist}-${album}`)}.${extension}` : undefined;
+  return artist && album ? `${slugify(`${artist}_${album}_artwork`)}.${extension}` : undefined;
+}
+
+export function makeTrackFileName(
+  filename: string,
+  trackNumber: number,
+  artist?: string,
+  album?: string,
+  track?: string
+) {
+  const extension = filename.split('.').pop();
+  return artist && album && track ? `${slugify(`${artist}_${album}_${trackNumber}_${track}`)}.${extension}` : undefined;
 }
 
 export async function saveFile(f: File, name?: string) {

@@ -1,46 +1,77 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { makeAlbumArtworkFileName, saveFile } from '@/utils/files';
+import { makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
 
-  const artist = formData.get('artist') as string;
-  const album = formData.get('album') as string;
+  const artistString = formData.get('artist') as string;
+  const albumString = formData.get('album') as string;
   const releaseDate = formData.get('releaseDate') as string;
-  const artwork = formData.get('artwork') as File | null;
 
-  const tracks: string[] = [];
+  const artwork = formData.get('artwork') as File | null;
+  let artworkUrl: string | null = null;
+  if (artwork) {
+    artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artistString, albumString));
+  }
+
+  type IncomingTrack = { name: string; file: File | null };
+
+  const trackMap = new Map<number, IncomingTrack>();
+
   for (const [key, value] of formData.entries()) {
-    if (key.startsWith('tracks[') && typeof value === 'string') {
-      tracks.push(value);
+    const match = key.match(/^tracks\[(\d+)]\[(name|file)]$/);
+    if (!match) continue;
+
+    const index = parseInt(match[1]);
+    const field = match[2];
+
+    if (!trackMap.has(index)) {
+      trackMap.set(index, { name: '', file: null });
+    }
+
+    const track = trackMap.get(index)!;
+
+    if (field === 'name' && typeof value === 'string') {
+      track.name = value;
+    } else if (field === 'file' && value instanceof File) {
+      track.file = value;
     }
   }
 
-  let artworkUrl: string | null = null;
-  if (artwork) {
-    artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artist, album));
-  }
+  const tracksToCreate = await Promise.all(
+    Array.from(trackMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(async ([i, { name, file }]) => {
+        let audioUrl: string | null = null;
+        if (file) {
+          audioUrl = await saveFile(file, `${makeTrackFileName(file.name, i + 1, artistString, albumString, name)}`);
+        }
+        return {
+          name,
+          number: i + 1,
+          audioUrl,
+        };
+      })
+  );
 
-  let artistRecord = await db.artist.findFirst({
-    where: { name: { equals: artist, mode: 'insensitive' } },
+  let artist = await db.artist.findFirst({
+    where: { name: { equals: artistString, mode: 'insensitive' } },
   });
 
-  if (!artistRecord) {
-    artistRecord = await db.artist.create({ data: { name: artist } });
+  if (!artist) {
+    artist = await db.artist.create({ data: { name: artistString } });
   }
 
-  const albumRecord = await db.album.create({
+  const album = await db.album.create({
     data: {
-      name: album,
+      name: albumString,
       releaseDate: new Date(releaseDate),
       artworkUrl,
-      artistId: artistRecord.id,
-      tracks: {
-        create: tracks.map((name, i) => ({ name, number: i + 1 })),
-      },
+      artistId: artist.id,
+      tracks: { create: tracksToCreate },
     },
   });
 
-  return NextResponse.json({ success: true, albumId: albumRecord.id });
+  return NextResponse.json({ success: true, albumId: album.id });
 }
