@@ -1,5 +1,6 @@
 'use client';
 
+import { usePlayer } from '@/contexts/PlayerContext';
 import { useEffect, useRef, useState } from 'react';
 
 interface AudioPlayerProps {
@@ -11,19 +12,24 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ src, trackName, onEnded, onNext, onPrevious }: AudioPlayerProps) {
+  const { isPlaying, setIsPlaying } = usePlayer();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isReady, setIsReady] = useState(false);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
-    if (playing) {
-      audioRef.current.pause();
+    const audio = audioRef.current;
+    if (audio.paused) {
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(console.error);
     } else {
-      audioRef.current.play();
+      audio.pause();
+      setIsPlaying(false);
     }
-    setPlaying(!playing);
   };
 
   const formatTime = (seconds: number) => new Date(seconds * 1000).toISOString().substr(14, 5);
@@ -42,9 +48,12 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
     const audio = audioRef.current;
 
     const handleTimeUpdate = () => setProgress(audio.currentTime);
-    const handleLoadedMetadata = () => setDuration(audio.duration);
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+      setIsReady(true);
+    };
     const handleEnded = () => {
-      setPlaying(false);
+      setIsPlaying(false);
       setProgress(0);
       if (onEnded) onEnded();
     };
@@ -61,12 +70,21 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
   }, [onEnded]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.src = src;
-      audioRef.current.load();
-      audioRef.current.play();
-      setPlaying(true);
+    if (!audioRef.current || !isReady) return;
+
+    if (isPlaying) {
+      audioRef.current.play().catch(console.error);
+    } else {
+      audioRef.current.pause();
     }
+  }, [isPlaying, isReady]);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    audioRef.current.src = src;
+    audioRef.current.load();
+    setProgress(0);
+    setIsReady(false);
   }, [src]);
 
   return (
@@ -77,7 +95,7 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
           ⏮ Prev
         </button>
         <button onClick={togglePlay} className='text-white px-3 py-1 rounded text-sm'>
-          {playing ? 'Pause' : 'Play'}
+          {isPlaying ? 'Pause' : 'Play'}
         </button>
         <button onClick={onNext} className='px-3 py-1 rounded text-sm'>
           Next ⏭
@@ -87,7 +105,7 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
           {formatTime(progress)} / {formatTime(duration)}
         </span>
       </div>
-      <audio ref={audioRef} />
+      <audio ref={audioRef} preload='metadata' />
     </div>
   );
 }
