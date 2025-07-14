@@ -9,7 +9,7 @@ export default function GlobalAudioPlayer() {
   if (!track) return null;
 
   return (
-    <div className='fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-md'>
+    <div className='fixed bottom-0 left-0 right-0 z-50 shadow-md h-25'>
       <div className='relative'>
         <button
           onClick={clearTrack}

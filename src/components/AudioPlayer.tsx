@@ -70,7 +70,7 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
   }, [src]);
 
   return (
-    <div className='w-full mt-4 p-4 border rounded'>
+    <div className='w-full p-2 border rounded'>
       <p className='text-lg font-medium mb-2'>{trackName}</p>
       <div className='flex items-center space-x-3'>
         <button onClick={onPrevious} className='px-3 py-1 rounded text-sm'>

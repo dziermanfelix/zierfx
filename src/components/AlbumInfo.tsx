@@ -6,6 +6,7 @@ import { formatDate, formatTime } from '@/utils/formatting';
 import { AlbumSlim } from '@/types/music';
 import AudioPlayer from '@/components/AudioPlayer';
 import { usePlayer } from '@/contexts/PlayerContext';
+import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
 
 interface AlbumInfoProps {
   album: AlbumSlim;
@@ -59,7 +60,7 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
                   handlePlay(index);
                 }}
               >
-                {currentTrackIndex === index ? 'Pause' : 'Play'}
+                {currentTrackIndex === index ? '00' : <Play />}
               </button>
 
               <div>{track.name}</div>
