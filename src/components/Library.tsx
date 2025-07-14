@@ -5,11 +5,11 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { slugify } from '@/utils/slugify';
 import { Album, Track } from '@prisma/client';
-import { ArtistWithAlbumsAndTracks } from '@/types/music';
+import { ArtistFull } from '@/types/music';
 import { formatDate } from '@/utils/formatting';
 
 type Props = {
-  artists: ArtistWithAlbumsAndTracks[];
+  artists: ArtistFull[];
 };
 
 export default function Library({ artists }: Props) {

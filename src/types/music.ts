@@ -1,18 +1,19 @@
 import { Artist, Album, Track } from '@prisma/client';
 
-export type TrackSlim = {
+export type TrackUi = {
   id: number;
   number: number;
   name: string;
   audioUrl: string;
+  length: number;
 };
 
-export type AlbumSlim = {
+export type AlbumUi = {
   id: number;
   name: string;
   releaseDate: Date;
   artworkUrl: string | null;
-  tracks: TrackSlim[];
+  tracks: TrackUi[];
 };
 
-export type ArtistWithAlbumsAndTracks = Artist & { albums: (Album & { tracks: Track[] })[] };
+export type ArtistFull = Artist & { albums: (Album & { tracks: Track[] })[] };

@@ -2,17 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, FormEvent } from 'react';
-import { AlbumSlim, TrackSlim } from '@/types/music';
+import { AlbumUi, TrackUi } from '@/types/music';
 import AlbumActions from './AlbumActions';
 import { slugify } from '@/utils/slugify';
 
 type AlbumInfoProps = {
-  album: AlbumSlim;
+  album: AlbumUi;
   artistName: string;
-  onSaveSuccess: (updatedAlbum: AlbumSlim) => void;
+  onSaveSuccess: (updatedAlbum: AlbumUi) => void;
 };
 
-type EditableTrack = TrackSlim & {
+type EditableTrack = TrackUi & {
   file?: File | null;
 };
 

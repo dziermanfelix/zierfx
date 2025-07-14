@@ -2,12 +2,12 @@
 
 import AlbumCover from '@/components/AlbumCover';
 import { formatDate, formatTime } from '@/utils/formatting';
-import { AlbumSlim } from '@/types/music';
+import { AlbumUi } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause } from 'lucide-react';
 
 interface AlbumInfoProps {
-  album: AlbumSlim;
+  album: AlbumUi;
   artistName: string;
 }
 
