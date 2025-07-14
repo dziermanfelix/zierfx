@@ -22,7 +22,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
       <div className='p-2'>
         <LibraryLink />
       </div>
-      <AlbumInfo album={album} artistName={artist.name} />
+      <AlbumInfo album={album} artist={artist} />
     </main>
   );
 }

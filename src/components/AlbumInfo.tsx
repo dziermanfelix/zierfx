@@ -1,19 +1,22 @@
 'use client';
 
-import AlbumCover from '@/components/AlbumCover';
 import { formatDate, formatTime } from '@/utils/formatting';
-import { AlbumUi } from '@/types/music';
+import { AlbumWithTracks, makeTrackWithAlbumAndArtist, TrackWithAlbumAndArtist } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause } from 'lucide-react';
 import AlbumCoverWithPlay from './AlbumCoverWithPlay';
+import { Artist } from '@prisma/client';
 
 interface AlbumInfoProps {
-  album: AlbumUi;
-  artistName: string;
+  album: AlbumWithTracks;
+  artist: Artist;
 }
 
-export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
+export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
   const { currentIndex, isPlaying, pause, resume, setPlaylistAndPlay } = usePlayer();
+  const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) =>
+    makeTrackWithAlbumAndArtist(track, album, artist)
+  );
 
   const handlePlay = (index: number) => {
     if (index === currentIndex) {
@@ -23,7 +26,6 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
         resume();
       }
     } else {
-      const tracks = album.tracks.map((t) => ({ src: t.audioUrl, name: t.name }));
       setPlaylistAndPlay(tracks, index);
     }
   };
@@ -32,11 +34,11 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
     <div className='p-4 flex flex-col max-w-7xl mx-auto rounded'>
       <div className='flex flex-row'>
         <div className='relative group p-2'>
-          <AlbumCoverWithPlay album={album} />
+          <AlbumCoverWithPlay tracks={tracks} />
         </div>
         <div className='flex flex-col ml-4 p-2 justify-center'>
           <h1 className='text-2xl font-bold'>{album.name}</h1>
-          <h2 className='text-xl text-gray-600'>{artistName}</h2>
+          <h2 className='text-xl text-gray-600'>{artist.name}</h2>
           <h2 className='text-xl text-gray-600'>{formatDate(album.releaseDate)}</h2>
         </div>
       </div>

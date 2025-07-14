@@ -2,14 +2,12 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { slugify } from '@/utils/slugify';
 import { Album, Track } from '@prisma/client';
-import { ArtistFull } from '@/types/music';
-import { formatDate } from '@/utils/formatting';
+import { ArtistWithAlbumAndTracks } from '@/types/music';
+import AlbumCard from './AlbumCard';
 
 type Props = {
-  artists: ArtistFull[];
+  artists: ArtistWithAlbumAndTracks[];
 };
 
 export default function Library({ artists }: Props) {
@@ -80,33 +78,12 @@ export default function Library({ artists }: Props) {
           <option value='track'>Track</option>
         </select>
       </div>
-      <div className='max-w-6xl mx-auto space-y-4'>
-        {filteredArtists.map((artist) => (
-          <div key={artist.id} className='p-2 shadow'>
-            <h2 className='text-xl font-semibold text-center'>{artist.name}</h2>
-
-            {artist.albums.map((album) => (
-              <Link
-                key={album.id}
-                href={`/albums/${slugify(artist.name)}/${slugify(album.name)}?search=${encodeURIComponent(
-                  search
-                )}&filter=${filterBy}`}
-                className='std-link block mt-2 ml-4 border m-2 p-4 rounded-xl shadow transition'
-              >
-                <h3 className='text-lg font-medium'>
-                  {album.name} ({formatDate(album.releaseDate)})
-                </h3>
-                <ul className='list-none ml-4'>
-                  {album.tracks.map((track) => (
-                    <li key={track.id}>
-                      {track.number}. {track.name}
-                    </li>
-                  ))}
-                </ul>
-              </Link>
-            ))}
-          </div>
-        ))}
+      <div className='grid gap-4 grid-cols-1 max-w-screen-lg mx-auto p-5'>
+        {filteredArtists.map((artist) =>
+          artist.albums.map((album) => (
+            <AlbumCard key={album.id} album={album} artist={artist} search={search} filterBy={filterBy} />
+          ))
+        )}
       </div>
     </div>
   );

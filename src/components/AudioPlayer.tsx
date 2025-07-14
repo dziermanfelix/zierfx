@@ -2,16 +2,19 @@
 
 import { usePlayer } from '@/contexts/PlayerContext';
 import { useEffect, useRef, useState } from 'react';
+import { Play, Pause, SkipBack, SkipForward } from 'lucide-react';
+import Link from 'next/link';
+import { slugify } from '@/utils/slugify';
+import { TrackWithAlbumAndArtist } from '@/types/music';
 
 interface AudioPlayerProps {
-  src: string;
-  trackName: string;
+  track: TrackWithAlbumAndArtist;
   onEnded?: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
 }
 
-export default function AudioPlayer({ src, trackName, onEnded, onNext, onPrevious }: AudioPlayerProps) {
+export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: AudioPlayerProps) {
   const { isPlaying, setIsPlaying } = usePlayer();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [progress, setProgress] = useState(0);
@@ -80,31 +83,47 @@ export default function AudioPlayer({ src, trackName, onEnded, onNext, onPreviou
   }, [isPlaying, isReady]);
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.src = src;
+    if (!audioRef.current || !track.audioUrl) return;
+    audioRef.current.src = track.audioUrl;
     audioRef.current.load();
     setProgress(0);
     setIsReady(false);
-  }, [src]);
+  }, [track]);
 
   return (
-    <div className='w-full p-2 border rounded'>
-      <p className='text-lg font-medium mb-2'>{trackName}</p>
-      <div className='flex items-center space-x-3'>
-        <button onClick={onPrevious} className='px-3 py-1 rounded text-sm'>
-          ⏮ Prev
-        </button>
-        <button onClick={togglePlay} className='text-white px-3 py-1 rounded text-sm'>
-          {isPlaying ? 'Pause' : 'Play'}
-        </button>
-        <button onClick={onNext} className='px-3 py-1 rounded text-sm'>
-          Next ⏭
-        </button>
-        <input type='range' min='0' max={duration || 0} value={progress} onChange={handleSeek} className='w-full' />
-        <span className='text-sm whitespace-nowrap'>
-          {formatTime(progress)} / {formatTime(duration)}
-        </span>
+    <div className='w-full h-full p-2 text-center items-center flex flex-row rounded justify-between bg-gray-900'>
+      <div className='m-1 rounded w-3/8 flex flex-row space-x-5 justify-start items-center'>
+        <Link href={`/albums/${slugify(track.artist.name)}/${slugify(track.album.name)}`} className='std-link'>
+          <img className='w-20 h-20 bg-black' src={track.album.artworkUrl ? track.album.artworkUrl : ''} alt=''></img>
+        </Link>
+        <div className='flex flex-col items-start align-left text-left'>
+          <p className='text-lg'>{track.name}</p>
+          <p className='text-md text-gray-300'>{track.artist.name}</p>
+          <p className='text-sm text-gray-300'>{track.album.name}</p>
+        </div>
       </div>
+
+      <div className='flex flex-col flex-1 space-y-2 items-center m-1 rounded'>
+        <div className='flex items-center space-x-3'>
+          <button onClick={onPrevious} className='px-2 py-1 text-sm rounded-full hover:text-blue-400'>
+            <SkipBack />
+          </button>
+          <button onClick={togglePlay} className='px-2 py-1 text-sm rounded-full hover:text-blue-300'>
+            {isPlaying ? <Pause /> : <Play />}
+          </button>
+          <button onClick={onNext} className='px-2 py-1 text-sm rounded-full hover:text-blue-400'>
+            <SkipForward />
+          </button>
+        </div>
+        <div className='flex flex-row space-x-1'>
+          <span className='text-sm'>{formatTime(progress)}</span>
+          <input className='w-full' type='range' min='0' max={duration || 0} value={progress} onChange={handleSeek} />
+          <span className='text-sm'>{formatTime(duration)}</span>
+        </div>
+      </div>
+
+      <div className='m-1 rounded w-3/8'></div>
+
       <audio ref={audioRef} preload='metadata' />
     </div>
   );

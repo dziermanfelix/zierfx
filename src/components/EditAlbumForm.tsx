@@ -5,10 +5,11 @@ import { useState, FormEvent } from 'react';
 import { AlbumUi, TrackUi } from '@/types/music';
 import AlbumActions from './AlbumActions';
 import { slugify } from '@/utils/slugify';
+import { Artist } from '@prisma/client';
 
 type AlbumInfoProps = {
   album: AlbumUi;
-  artistName: string;
+  artist: Artist;
   onSaveSuccess: (updatedAlbum: AlbumUi) => void;
 };
 
@@ -16,7 +17,7 @@ type EditableTrack = TrackUi & {
   file?: File | null;
 };
 
-export default function EditAlbumForm({ album, artistName, onSaveSuccess }: AlbumInfoProps) {
+export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInfoProps) {
   const router = useRouter();
   const [albumName, setAlbumName] = useState(album.name);
   const [releaseDate, setReleaseDate] = useState(album.releaseDate.toString().slice(0, 10));
@@ -34,7 +35,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     setSaving(true);
 
     const formData = new FormData();
-    formData.append('artistName', artistName);
+    formData.append('artistName', artist.name);
     formData.append('albumName', albumName);
     formData.append('releaseDate', String(releaseDate));
     if (artwork) formData.append('artwork', artwork);
@@ -56,7 +57,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     if (res.ok) {
       const updated = await res.json();
       onSaveSuccess(updated.album);
-      router.replace(`/albums/${slugify(artistName)}/${slugify(updated.album.name)}/edit`);
+      router.replace(`/albums/${slugify(artist.name)}/${slugify(updated.album.name)}/edit`);
     } else {
       alert('Update failed.');
     }

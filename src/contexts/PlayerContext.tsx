@@ -1,21 +1,17 @@
 'use client';
 
+import { TrackWithAlbumAndArtist } from '@/types/music';
 import { createContext, useContext, useState } from 'react';
 
-interface Track {
-  src: string | null;
-  name: string;
-}
-
 interface PlayerContextType {
-  playlist: Track[];
+  playlist: TrackWithAlbumAndArtist[];
   currentIndex: number;
-  track: Track | null;
+  track: TrackWithAlbumAndArtist | null;
   isPlaying: boolean;
   setIsPlaying: (playing: boolean) => void;
   pause: () => void;
   resume: () => void;
-  setPlaylistAndPlay: (tracks: Track[], startIndex: number) => void;
+  setPlaylistAndPlay: (tracks: TrackWithAlbumAndArtist[], startIndex: number) => void;
   playNext: () => void;
   playPrevious: () => void;
   clearTrack: () => void;
@@ -24,13 +20,13 @@ interface PlayerContextType {
 const PlayerContext = createContext<PlayerContextType | null>(null);
 
 export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
-  const [playlist, setPlaylist] = useState<Track[]>([]);
+  const [playlist, setPlaylist] = useState<TrackWithAlbumAndArtist[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false); // ✅ new
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const track = currentIndex >= 0 ? playlist[currentIndex] : null;
 
-  const setPlaylistAndPlay = (tracks: Track[], startIndex: number) => {
+  const setPlaylistAndPlay = (tracks: TrackWithAlbumAndArtist[], startIndex: number) => {
     setPlaylist(tracks);
     setCurrentIndex(startIndex);
     setIsPlaying(true);

@@ -4,19 +4,18 @@ import { useState } from 'react';
 import { Play } from 'lucide-react';
 import AlbumCover from '@/components/AlbumCover';
 import { usePlayer } from '@/contexts/PlayerContext';
-import { AlbumUi } from '@/types/music';
+import { TrackWithAlbumAndArtist } from '@/types/music';
 
 interface AlbumCoverProps {
-  album: AlbumUi;
+  tracks: TrackWithAlbumAndArtist[];
 }
 
-export default function AlbumCoverWithPlay({ album }: AlbumCoverProps) {
+export default function AlbumCoverWithPlay({ tracks }: AlbumCoverProps) {
   const { setPlaylistAndPlay } = usePlayer();
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayDisabled, setOverlayDisabled] = useState(false);
 
   const handlePlay = () => {
-    const tracks = album.tracks.map((t) => ({ src: t.audioUrl, name: t.name }));
     setPlaylistAndPlay(tracks, 0);
     setShowOverlay(false);
     setOverlayDisabled(true);
@@ -37,7 +36,7 @@ export default function AlbumCoverWithPlay({ album }: AlbumCoverProps) {
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
     >
-      <AlbumCover src={album.artworkUrl} alt={`${album.name} artwork`} />
+      <AlbumCover src={tracks[0].album.artworkUrl} alt={`${tracks[0].album.name} artwork`} />
       {showOverlay && (
         <button
           onClick={handlePlay}
