@@ -5,6 +5,7 @@ import { formatDate, formatTime } from '@/utils/formatting';
 import { AlbumUi } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause } from 'lucide-react';
+import AlbumCoverWithPlay from './AlbumCoverWithPlay';
 
 interface AlbumInfoProps {
   album: AlbumUi;
@@ -30,8 +31,8 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
   return (
     <div className='p-4 flex flex-col max-w-7xl mx-auto rounded'>
       <div className='flex flex-row'>
-        <div className='p-2 mb-3'>
-          <AlbumCover src={album.artworkUrl} alt={`${album.name} artwork`} />
+        <div className='relative group p-2'>
+          <AlbumCoverWithPlay album={album} />
         </div>
         <div className='flex flex-col ml-4 p-2 justify-center'>
           <h1 className='text-2xl font-bold'>{album.name}</h1>
