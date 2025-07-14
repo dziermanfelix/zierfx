@@ -42,7 +42,7 @@ export default function EditAlbumForm({ album, artistName, onSaveSuccess }: Albu
     tracks.forEach((track, index) => {
       formData.append(`tracks[${index}][id]`, track.id.toString());
       formData.append(`tracks[${index}][name]`, track.name);
-      formData.append(`tracks[${index}][number]`, track.number);
+      formData.append(`tracks[${index}][number]`, track.number.toString());
       if (track.file) {
         formData.append(`tracks[${index}][file]`, track.file);
       }

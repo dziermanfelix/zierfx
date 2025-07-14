@@ -7,6 +7,7 @@ export default function GlobalAudioPlayer() {
   const { track, playNext, playPrevious, clearTrack } = usePlayer();
 
   if (!track) return null;
+  if (!track.src) return null;
 
   return (
     <div className='fixed bottom-0 left-0 right-0 z-50 shadow-md h-25'>

@@ -63,7 +63,7 @@ export default function AlbumInfo({ album, artistName }: AlbumInfoProps) {
               <div>{track.name}</div>
             </div>
             <div className='flex flex-row space-x-2 items-center'>
-              <div>{formatTime(track.length)}</div>
+              <div>{track.length ? formatTime(track.length) : ''}</div>
             </div>
           </li>
         ))}

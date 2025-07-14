@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from 'react';
 
 interface Track {
-  src: string;
+  src: string | null;
   name: string;
 }
 

@@ -4,8 +4,8 @@ export type TrackUi = {
   id: number;
   number: number;
   name: string;
-  audioUrl: string;
-  length: number;
+  audioUrl: string | null;
+  length: number | null;
 };
 
 export type AlbumUi = {
