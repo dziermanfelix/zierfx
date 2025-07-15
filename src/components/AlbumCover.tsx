@@ -10,7 +10,7 @@ interface AlbumCoverProps {
 
 const AlbumCover: React.FC<AlbumCoverProps> = ({ src, alt = '', dim = 300 }) => {
   const [hasError, setHasError] = useState(false);
-  const commonClasses = 'aspect-square object-cover bg-gray-200';
+  const commonClasses = 'aspect-square object-cover bg-gray-800';
 
   const artworkStyle = {
     width: `${dim}px`,

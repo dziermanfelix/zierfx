@@ -94,7 +94,11 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
     <div className='w-full h-full p-2 text-center items-center flex flex-row rounded justify-between bg-gray-900'>
       <div className='m-1 rounded w-3/8 flex flex-row space-x-5 justify-start items-center'>
         <Link href={`/albums/${slugify(track.artist.name)}/${slugify(track.album.name)}`} className='std-link'>
-          <img className='w-20 h-20 bg-black' src={track.album.artworkUrl ? track.album.artworkUrl : ''} alt=''></img>
+          <img
+            className='w-20 h-20 bg-gray-800'
+            src={track.album.artworkUrl ? track.album.artworkUrl : undefined}
+            alt=''
+          ></img>
         </Link>
         <div className='flex flex-col items-start align-left text-left'>
           <p className='text-lg'>{track.name}</p>
