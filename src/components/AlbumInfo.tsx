@@ -3,7 +3,7 @@
 import { formatDate, formatTime } from '@/utils/formatting';
 import { AlbumWithTracks, makeTrackWithAlbumAndArtist, TrackWithAlbumAndArtist } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Download } from 'lucide-react';
 import AlbumCoverWithPlay from './AlbumCoverWithPlay';
 import { Artist } from '@prisma/client';
 
@@ -52,9 +52,8 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
           >
             <div className='flex flex-row space-x-2 items-center'>
               <div className='block group-hover:hidden'>{track.number}</div>
-
               <button
-                className='hidden group-hover:inline-block transition-opacity duration-200'
+                className='hidden group-hover:inline-block transition-opacity duration-200 hover:text-blue-300'
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePlay(index);
@@ -62,11 +61,21 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
               >
                 {currentIndex === index && isPlaying ? <Pause /> : <Play />}
               </button>
-
               <div>{track.name}</div>
             </div>
+
             <div className='flex flex-row space-x-2 items-center'>
-              <div>{track.length ? formatTime(track.length) : ''}</div>
+              <a
+                href={track.audioUrl || '#'}
+                download
+                className='hidden group-hover:inline-flex items-center text-sm rounded hover:text-blue-300 transition'
+                onClick={(e) => {
+                  if (!track.audioUrl) e.preventDefault();
+                }}
+              >
+                <Download />
+              </a>
+              <div className='group-hover:hidden'>{track.length ? formatTime(track.length) : ''}</div>
             </div>
           </li>
         ))}
