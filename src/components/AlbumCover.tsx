@@ -5,18 +5,27 @@ import React, { useState } from 'react';
 interface AlbumCoverProps {
   src?: string | null;
   alt?: string;
+  dim?: number;
 }
 
-const artworkClassName = 'w-85 h-85 aspect-square object-cover p-2 bg-gray-200';
-
-const AlbumCover: React.FC<AlbumCoverProps> = ({ src, alt = '' }) => {
+const AlbumCover: React.FC<AlbumCoverProps> = ({ src, alt = '', dim = 300 }) => {
   const [hasError, setHasError] = useState(false);
+  const commonClasses = 'aspect-square object-cover bg-gray-200';
+
+  const artworkStyle = {
+    width: `${dim}px`,
+    height: `${dim}px`,
+  };
 
   if (!src || hasError) {
-    return <div className={artworkClassName} />;
+    return <div className={commonClasses} style={artworkStyle} />;
   }
 
-  return <img src={src} alt={alt} onError={() => setHasError(true)} className={artworkClassName} />;
+  if (!src || hasError) {
+    return <div className={commonClasses} style={artworkStyle} />;
+  }
+
+  return <img src={src} alt={alt} onError={() => setHasError(true)} className={commonClasses} style={artworkStyle} />;
 };
 
 export default AlbumCover;

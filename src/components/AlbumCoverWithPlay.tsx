@@ -8,9 +8,10 @@ import { TrackWithAlbumAndArtist } from '@/types/music';
 
 interface AlbumCoverProps {
   tracks: TrackWithAlbumAndArtist[];
+  dim?: number;
 }
 
-export default function AlbumCoverWithPlay({ tracks }: AlbumCoverProps) {
+export default function AlbumCoverWithPlay({ tracks, dim }: AlbumCoverProps) {
   const { setPlaylistAndPlay } = usePlayer();
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayDisabled, setOverlayDisabled] = useState(false);
@@ -32,14 +33,17 @@ export default function AlbumCoverWithPlay({ tracks }: AlbumCoverProps) {
 
   return (
     <div
-      className='relative group w-fit p-2 mb-3 cursor-pointer'
+      className='relative group w-fit cursor-pointer'
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
     >
-      <AlbumCover src={tracks[0].album.artworkUrl} alt={`${tracks[0].album.name} artwork`} />
+      <AlbumCover src={tracks[0].album.artworkUrl} alt={tracks[0].album.name} dim={dim} />
       {showOverlay && (
         <button
-          onClick={handlePlay}
+          onClick={(e) => {
+            e.preventDefault();
+            handlePlay();
+          }}
           className='absolute inset-0 flex items-center justify-center bg-opacity-50 text-white opacity-100 transition-opacity duration-300 cursor-pointer'
         >
           <Play className='w-20 h-20' />
