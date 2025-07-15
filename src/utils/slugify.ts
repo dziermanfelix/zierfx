@@ -1,3 +1,5 @@
+import { Album, Artist } from '@prisma/client';
+
 export function slugify(str: string): string {
   return str
     .toLowerCase()
@@ -10,4 +12,8 @@ export function deslugify(slug: string): string {
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+export function makeAlbumLink(artistSlug: string, albumSlug: string, search: string, filterBy: string) {
+  return `/albums/${artistSlug}/${albumSlug}?search=${encodeURIComponent(search)}&filter=${filterBy}`;
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
+import { slugify } from '@/utils/slugify';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -8,6 +9,9 @@ export async function POST(req: NextRequest) {
   const artistString = formData.get('artist') as string;
   const albumString = formData.get('album') as string;
   const releaseDate = formData.get('releaseDate') as string;
+
+  const artistSlug = slugify(artistString);
+  const albumSlug = slugify(albumString);
 
   const artwork = formData.get('artwork') as File | null;
   let artworkUrl: string | null = null;
@@ -65,7 +69,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (!artist) {
-    artist = await db.artist.create({ data: { name: artistString } });
+    artist = await db.artist.create({ data: { name: artistString, slug: artistSlug } });
   }
 
   const album = await db.album.create({
@@ -75,6 +79,7 @@ export async function POST(req: NextRequest) {
       artworkUrl,
       artistId: artist.id,
       tracks: { create: tracksToCreate },
+      slug: albumSlug,
     },
   });
 
