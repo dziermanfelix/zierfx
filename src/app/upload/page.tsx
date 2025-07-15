@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LibraryLink from '@/components/LIbraryLink';
 import { routes } from '@/utils/routes';
+import FileInput from '@/components/FileInput';
 
 export default function UploadPage() {
   const router = useRouter();
+  const [uploading, setUploading] = useState(false);
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
@@ -15,6 +17,7 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
 
     const formData = new FormData();
 
@@ -43,6 +46,7 @@ export default function UploadPage() {
     } else {
       alert('Something went wrong.');
     }
+    setUploading(false);
   };
 
   return (
@@ -79,11 +83,11 @@ export default function UploadPage() {
             required
           />
 
-          <input
-            type='file'
+          <FileInput
+            className='pt-4 pb-4 w-full'
             accept='image/*'
-            onChange={(e) => setArtwork(e.target.files?.[0] || null)}
-            className='border p-2 w-full rounded'
+            label='Album Artwork'
+            onChange={(file) => setArtwork(file)}
           />
 
           <div className='space-y-2'>
@@ -117,13 +121,13 @@ export default function UploadPage() {
                   </button>
                 </div>
 
-                <input
-                  className='border p-1 text-sm rounded w-1/8'
-                  type='file'
+                <FileInput
+                  className='w-full pt-2'
                   accept='audio/*'
-                  onChange={(e) => {
+                  label={`Track ${index + 1} File`}
+                  onChange={(file) => {
                     const updated = [...tracks];
-                    updated[index].file = e.target.files?.[0] || null;
+                    updated[index].file = file;
                     setTracks(updated);
                   }}
                   required
@@ -139,8 +143,12 @@ export default function UploadPage() {
             </button>
           </div>
 
-          <button type='submit' className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
-            Upload
+          <button
+            disabled={uploading}
+            type='submit'
+            className='submit-btn'
+          >
+            {uploading ? 'Uploading...' : 'Upload'}
           </button>
         </form>
       </div>

@@ -16,6 +16,6 @@ export async function GET(req: Request, context: { params: Promise<{ artist: str
 
   return NextResponse.json({
     album: album,
-    artistName: artist.name,
+    artist: artist,
   });
 }

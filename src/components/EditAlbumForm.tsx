@@ -6,6 +6,7 @@ import { AlbumUi, TrackUi } from '@/types/music';
 import AlbumActions from './AlbumActions';
 import { slugify } from '@/utils/slugify';
 import { Artist } from '@prisma/client';
+import FileInput from './FileInput';
 
 type AlbumInfoProps = {
   album: AlbumUi;
@@ -19,6 +20,7 @@ type EditableTrack = TrackUi & {
 
 export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInfoProps) {
   const router = useRouter();
+  const [saving, setSaving] = useState(false);
   const [albumName, setAlbumName] = useState(album.name);
   const [releaseDate, setReleaseDate] = useState(album.releaseDate.toString().slice(0, 10));
   const [artwork, setArtwork] = useState<File | null>(null);
@@ -28,7 +30,6 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
       file: null,
     }))
   );
-  const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,13 +113,13 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
                     }}
                   />
 
-                  <input
-                    className='border p-1 text-sm rounded w-1/8'
-                    type='file'
+                  <FileInput
+                    className='w-full pt-2'
                     accept='audio/*'
-                    onChange={(e) => {
+                    label={`Track ${index + 1} File`}
+                    onChange={(file) => {
                       const updated = [...tracks];
-                      updated[index].file = e.target.files?.[0] || null;
+                      updated[index].file = file;
                       setTracks(updated);
                     }}
                   />
@@ -128,7 +129,7 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
           ))}
         </div>
 
-        <button disabled={saving} type='submit' className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
+        <button disabled={saving} type='submit' className='submit-btn'>
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>

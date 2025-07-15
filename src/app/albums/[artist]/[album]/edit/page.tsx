@@ -18,14 +18,14 @@ export default function EditAlbumPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data?.album) {
-          setAlbum(data);
+          setAlbum(data.album);
         }
         if (data?.artist) {
-          setArtist(data);
+          setArtist(data.artist);
         }
       })
       .finally(() => setLoading(false));
-  }, [artist, album]);
+  }, [artistParam, albumParam]);
 
   if (loading) return <div className='p-8'>Loading...</div>;
   if (!album) return <div className='p-8 text-red-500'>Album not found.</div>;
