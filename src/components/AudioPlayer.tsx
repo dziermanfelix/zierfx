@@ -108,7 +108,7 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
       </div>
 
       <div className='flex flex-col flex-1 space-y-2 items-center m-1 rounded'>
-        <div className='flex items-center space-x-3'>
+        <div className='flex flex-row space-x-3 justify-center w-full'>
           <button onClick={onPrevious} className='px-2 py-1 text-sm rounded-full hover:text-blue-400'>
             <SkipBack />
           </button>
@@ -119,7 +119,8 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
             <SkipForward />
           </button>
         </div>
-        <div className='flex flex-row space-x-1'>
+
+        <div className='flex flex-row space-x-1 w-full'>
           <span className='text-sm'>{formatTime(progress)}</span>
           <input className='w-full' type='range' min='0' max={duration || 0} value={progress} onChange={handleSeek} />
           <span className='text-sm'>{formatTime(duration)}</span>
