@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { deleteFile, getTrackLength, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
+import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName } from '@/utils/files';
+import { deleteFile, saveFile } from '@/lib/storage';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;

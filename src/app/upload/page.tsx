@@ -143,11 +143,7 @@ export default function UploadPage() {
             </button>
           </div>
 
-          <button
-            disabled={uploading}
-            type='submit'
-            className='submit-btn'
-          >
+          <button disabled={uploading} type='submit' className='submit-btn'>
             {uploading ? 'Uploading...' : 'Upload'}
           </button>
         </form>

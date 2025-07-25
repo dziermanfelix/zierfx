@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
-import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName, saveFile } from '@/utils/files';
+import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName } from '@/utils/files';
+import { saveFile } from '@/lib/storage';
 import { slugify } from '@/utils/slugify';
 
 export async function POST(req: NextRequest) {
