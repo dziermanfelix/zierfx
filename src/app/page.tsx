@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <main className='p-8'>
-      <Menu />
+      {/* <Menu /> */}
       <Library artists={artists} />
     </main>
   );
