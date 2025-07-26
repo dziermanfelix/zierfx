@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Loader } from 'lucide-react';
 import { Track } from '@prisma/client';
 
 interface Props {
@@ -13,21 +13,24 @@ export default function TrackDownloadButton({ track }: Props) {
 
   const handleDownload = async (e: React.MouseEvent, url?: string) => {
     e.preventDefault();
-
-    setDownloading(true);
-
     if (!url) return;
 
-    const filename = url.split('/').pop() || 'track.wav';
-
-    const link = document.createElement('a');
-    link.href = `/api/download?url=${encodeURIComponent(url)}`;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setDownloading(false);
+    try {
+      setDownloading(true);
+      const filename = url.split('/').pop() || 'track.wav';
+      const link = document.createElement('a');
+      link.href = `/api/download?url=${encodeURIComponent(url)}`;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Download failed:', err);
+    } finally {
+      setTimeout(() => {
+        setDownloading(false);
+      }, 1000);
+    }
   };
 
   return (
@@ -41,7 +44,7 @@ export default function TrackDownloadButton({ track }: Props) {
         downloading ? 'cursor-auto' : 'hover:text-blue-300'
       } group-hover:inline-flex items-center text-sm rounded  transition`}
     >
-      {downloading ? '...' : <Download />}
+      {downloading ? <Loader className='animate-spin w-4 h-4' /> : <Download />}
     </button>
   );
 }
