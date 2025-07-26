@@ -3,10 +3,12 @@ dotenv.config();
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SERVICE_KEY!);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 async function listAllFiles() {
-  const { data, error } = await supabase.storage.from('albums').list('');
+  const bucket = process.env.SUPABASE_BUCKET;
+  if (!bucket) return null;
+  const { data, error } = await supabase.storage.from(bucket).list('');
 
   if (error) {
     console.error('Error listing files:', error);
