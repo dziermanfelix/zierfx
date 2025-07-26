@@ -6,6 +6,8 @@ import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause, Download } from 'lucide-react';
 import AlbumCoverWithPlay from './AlbumCoverWithPlay';
 import { Artist } from '@prisma/client';
+import { downloadFromSignedUrl, getSignedUrl } from '@/utils/tracks';
+import { USE_SUPABASE_STORAGE } from '@/env';
 
 interface AlbumInfoProps {
   album: AlbumWithTracks;
@@ -29,6 +31,33 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
       setPlaylistAndPlay(tracks, index);
     }
   };
+
+  const handleDownload = async (e: React.MouseEvent, url?: string) => {
+    e.preventDefault();
+    if (!url) return;
+
+    if (USE_SUPABASE_STORAGE) {
+      const path = extractPathFromPublicUrl(url);
+      const signedUrl = await getSignedUrl(path);
+      if (!signedUrl) return;
+      const filename = path.split('/').pop() || 'track.wav';
+      downloadFromSignedUrl(signedUrl, filename);
+    } else {
+      const filename = url.split('/').pop() || 'track.wav';
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  };
+
+  function extractPathFromPublicUrl(url: string): string {
+    const match = url.match(/\/object\/public\/albums\/(.+)$/);
+    if (!match) throw new Error('Invalid Supabase public URL');
+    return match[1];
+  }
 
   return (
     <div className='p-4 flex flex-col max-w-7xl mx-auto rounded'>
@@ -65,16 +94,15 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
             </div>
 
             <div className='flex flex-row space-x-2 items-center'>
-              <a
-                href={track.audioUrl || '#'}
-                download
-                className='hidden group-hover:inline-flex items-center text-sm rounded hover:text-blue-300 transition'
+              <button
                 onClick={(e) => {
-                  if (!track.audioUrl) e.preventDefault();
+                  e.stopPropagation();
+                  handleDownload(e, track.audioUrl || undefined);
                 }}
+                className='hidden group-hover:inline-flex items-center text-sm rounded hover:text-blue-300 transition'
               >
                 <Download />
-              </a>
+              </button>
               <div className='group-hover:hidden'>{track.length ? formatTime(track.length) : ''}</div>
             </div>
           </li>
