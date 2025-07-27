@@ -5,11 +5,13 @@ import { useParams } from 'next/navigation';
 import AlbumInfo from '@/components/AlbumInfo';
 import LibraryLink from '@/components/LIbraryLink';
 import EditAlbumForm from '@/components/EditAlbumForm';
+import { AlbumWithTracks } from '@/types/music';
+import { Artist } from '@prisma/client';
 
 export default function EditAlbumPage() {
   const { artist: artistParam, album: albumParam } = useParams() as { artist: string; album: string };
-  const [album, setAlbum] = useState<any>(null);
-  const [artist, setArtist] = useState<any>(null);
+  const [album, setAlbum] = useState<AlbumWithTracks>();
+  const [artist, setArtist] = useState<Artist>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function EditAlbumPage() {
       <EditAlbumForm
         album={album}
         artist={artist}
-        onSaveSuccess={(updatedData) => setAlbum({ ...album, album: updatedData })}
+        onSaveSuccess={(updatedAlbum: AlbumWithTracks) => setAlbum(updatedAlbum)}
       />
     </main>
   );

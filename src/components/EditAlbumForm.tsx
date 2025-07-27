@@ -2,19 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, FormEvent } from 'react';
-import { AlbumUi, TrackUi } from '@/types/music';
 import AlbumActions from './AlbumActions';
 import { slugify } from '@/utils/slugify';
-import { Artist } from '@prisma/client';
+import { Album, Artist, Track } from '@prisma/client';
 import FileInput from './FileInput';
+import { AlbumWithTracks } from '@/types/music';
 
 type AlbumInfoProps = {
-  album: AlbumUi;
+  album: AlbumWithTracks;
   artist: Artist;
-  onSaveSuccess: (updatedAlbum: AlbumUi) => void;
+  onSaveSuccess: (updatedAlbum: AlbumWithTracks) => void;
 };
 
-type EditableTrack = TrackUi & {
+type EditableTrack = Track & {
   file?: File | null;
 };
 
