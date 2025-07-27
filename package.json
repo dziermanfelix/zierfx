@@ -11,7 +11,6 @@
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "seed": "ts-node prisma/seed.ts",
     "clean": "ts-node prisma/clean.ts"
   },
   "dependencies": {
