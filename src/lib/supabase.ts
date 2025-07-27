@@ -15,7 +15,7 @@ export async function saveFileSupabase(file: File, name: string) {
 
 export async function deleteFileSupabase(path: string) {
   const fileName = extractFilenameFromPublicUrl(path);
-  const { data, error } = await supabase.storage.from(SUPABASE_BUCKET).remove([fileName]);
+  const { error } = await supabase.storage.from(SUPABASE_BUCKET).remove([fileName]);
   if (error) throw error;
 }
 

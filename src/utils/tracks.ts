@@ -1,5 +1,3 @@
-import { supabase } from '@/lib/supabase';
-
 export async function downloadFromSignedUrl(signedUrl: string, filename: string) {
   const res = await fetch(signedUrl);
   const blob = await res.blob();

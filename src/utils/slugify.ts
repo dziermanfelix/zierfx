@@ -1,5 +1,3 @@
-import { Album, Artist } from '@prisma/client';
-
 export function slugify(str: string): string {
   return str
     .toLowerCase()
