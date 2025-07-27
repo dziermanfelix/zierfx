@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import LibraryLink from '@/components/LIbraryLink';
 import { routes } from '@/utils/routes';
@@ -52,7 +52,9 @@ export default function UploadPage() {
   return (
     <main className='p-8'>
       <div className='p-2'>
-        <LibraryLink />
+        <Suspense fallback={<div>Loading Upload Page...</div>}>
+          <LibraryLink />
+        </Suspense>
       </div>
       <div className='max-w-xl mx-auto space-y-4'>
         <h1 className='text-2xl font-bold'>New Release</h1>
