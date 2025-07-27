@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface AlbumActionsProps {
-  albumId: Number;
+  albumId: number;
 }
 
 const AlbumActions: React.FC<AlbumActionsProps> = ({ albumId }) => {
