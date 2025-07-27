@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, FormEvent } from 'react';
 import AlbumActions from './AlbumActions';
 import { slugify } from '@/utils/slugify';
-import { Album, Artist, Track } from '@prisma/client';
+import { Artist, Track } from '@prisma/client';
 import FileInput from './FileInput';
 import { AlbumWithTracks } from '@/types/music';
 

@@ -5,7 +5,7 @@ import {
   TrackWithAlbumAndArtist,
 } from '@/types/music';
 import Link from 'next/link';
-import { makeAlbumLink, slugify } from '@/utils/slugify';
+import { makeAlbumLink } from '@/utils/slugify';
 import { formatDate } from '@/utils/formatting';
 import AlbumCoverWithPlay from './AlbumCoverWithPlay';
 
@@ -22,7 +22,11 @@ const AlbumCard = ({ artist, album, search, filterBy }: AlbumCardProps) => {
   );
 
   return (
-    <Link key={album.id} href={makeAlbumLink(artist.slug, album.slug, search, filterBy)} className='block p-2 border rounded hover:border-blue-300'>
+    <Link
+      key={album.id}
+      href={makeAlbumLink(artist.slug, album.slug, search, filterBy)}
+      className='block p-2 border rounded hover:border-blue-300'
+    >
       <div className='flex flex-row space-x-2'>
         <AlbumCoverWithPlay tracks={tracks} dim={160} />
         <div className='m-2 flex flex-col text-start justify-center'>
