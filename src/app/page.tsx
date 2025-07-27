@@ -1,4 +1,5 @@
 import { db } from '@/lib/prisma';
+import { Suspense } from 'react';
 import Library from '@/components/Library';
 
 export default async function Home() {
@@ -14,7 +15,9 @@ export default async function Home() {
 
   return (
     <main className='p-8'>
-      <Library artists={artists} />
+      <Suspense fallback={<div>Loading Library...</div>}>
+        <Library artists={artists} />
+      </Suspense>
     </main>
   );
 }

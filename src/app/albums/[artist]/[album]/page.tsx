@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import LibraryLink from '@/components/LIbraryLink';
 import AlbumInfo from '@/components/AlbumInfo';
@@ -20,7 +21,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   return (
     <main className='p-8 space-y-4'>
       <div className='p-2'>
-        <LibraryLink />
+        <Suspense fallback={<div>Loading Album Info...</div>}>
+          <LibraryLink />
+        </Suspense>
       </div>
       <AlbumInfo album={album} artist={artist} />
     </main>
