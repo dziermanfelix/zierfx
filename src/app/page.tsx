@@ -16,7 +16,7 @@ export default async function Home() {
   });
 
   return (
-    <main className='p-8'>
+    <main className='p-4 sm:p-8'>
       <Suspense fallback={<div>Loading Library...</div>}>
         <Library artists={artists} />
       </Suspense>

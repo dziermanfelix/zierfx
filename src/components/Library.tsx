@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Album, Track } from '@prisma/client';
 import { ArtistWithAlbumAndTracks } from '@/types/music';
 import AlbumCard from './AlbumCard';
+import { useIsMobile } from '@/utils/mobile';
 
 type Props = {
   artists: ArtistWithAlbumAndTracks[];
@@ -16,6 +17,7 @@ export default function Library({ artists }: Props) {
   const initialFilter = (searchParams.get('filter') as 'artist' | 'album' | 'track') ?? 'artist';
   const [search, setSearch] = useState(initialSearch);
   const [filterBy, setFilterBy] = useState<'artist' | 'album' | 'track'>(initialFilter);
+  const isMobile = useIsMobile();
 
   const router = useRouter();
 
@@ -60,13 +62,13 @@ export default function Library({ artists }: Props) {
 
   return (
     <div className='space-y-4'>
-      <div className='ml-5 flex gap-4 items-center'>
+      <div className={`${isMobile ? 'flex flex-col gap-3 px-2' : 'ml-5 flex gap-4 items-center'}`}>
         <input
           type='text'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder='Search'
-          className='border p-1 rounded w-full max-w-sm'
+          className={`border rounded p-1 w-full ${!isMobile && 'max-w-sm'}`}
         />
         <select
           value={filterBy}
@@ -78,7 +80,7 @@ export default function Library({ artists }: Props) {
           <option value='track'>Track</option>
         </select>
       </div>
-      <div className='grid gap-4 grid-cols-1 max-w-screen-lg mx-auto p-5'>
+      <div className={`grid gap-4 ${isMobile ? 'grid-cols-1 px-2' : 'grid-cols-1 max-w-screen-lg mx-auto p-5'}`}>
         {filteredArtists.map((artist) =>
           artist.albums.map((album) => (
             <AlbumCard key={album.id} album={album} artist={artist} search={search} filterBy={filterBy} />

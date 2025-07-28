@@ -19,7 +19,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   if (!artist || !album) return notFound();
 
   return (
-    <main className='p-8 space-y-4'>
+    <main className='p-4 sm:p-8 space-y-4'>
       <div className='p-2'>
         <Suspense fallback={<div>Loading Album Info...</div>}>
           <LibraryLink />
