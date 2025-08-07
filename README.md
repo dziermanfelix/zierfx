@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zierfx
+
+A music library management application built with Next.js, Prisma, and Supabase.
+
+## Features
+
+- Upload and manage music albums with tracks
+- Artist and album organization
+- Audio file storage and playback
+- Album artwork support
+- Track metadata extraction
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database
+- Supabase account (for file storage)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Configure the following variables:
+
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `SUPABASE_URL`: Supabase project URL
+   - `SUPABASE_ANON_KEY`: Supabase anonymous key
+   - `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
+   - `SUPABASE_BUCKET`: Supabase bucket for storing albums
+
+4. Set up the database:
+
+   ```bash
+   npm run migrate
+   ```
+
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Testing
+
+Run tests with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Available Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run start`: Start production server
+- `npm run lint`: Run ESLint
+- `npm run migrate`: Run database migrations
+- `npm run studio`: Open Prisma Studio
+- `npm run clean`: Clean database
+- `npm test`: Run tests
+- `npm run test:watch`: Run tests in watch mode
+- `npm run test:coverage`: Run tests with coverage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database Schema
 
-## Learn More
+The application uses Prisma with PostgreSQL and includes the following models:
 
-To learn more about Next.js, take a look at the following resources:
+- **Artist**: Music artists with unique names and slugs
+- **Album**: Albums with release dates, artwork, and artist relationships
+- **Track**: Individual tracks with audio files, lengths, and album relationships
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `POST /api/upload`: Upload new albums with tracks
+- `PATCH /api/album/[id]`: Update album information
+- `DELETE /api/album/[id]`: Delete albums and associated files
+- `GET /api/album/slug/[artist]/[album]`: Get album by slug
+- `GET /api/download`: Download audio files
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Write tests for new features
+2. Ensure all tests pass
+3. Follow the existing code style
+4. Update documentation as needed
