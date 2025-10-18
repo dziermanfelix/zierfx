@@ -26,8 +26,26 @@ export default function MenuBar() {
         </button>
 
         {open && (
-          <div className='absolute right-0 mt-2 border shadow rounded z-10 w-30'>
-            <Link href='/upload' className='std-link block px-4 py-2 text-left w-full' onClick={() => setOpen(false)}>
+          <div className='absolute right-0 mt-2 border shadow rounded z-10 w-30 bg-white dark:bg-gray-800'>
+            <Link
+              href='/'
+              className='std-link block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-700'
+              onClick={() => setOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href='/library'
+              className='std-link block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-700'
+              onClick={() => setOpen(false)}
+            >
+              Library
+            </Link>
+            <Link
+              href='/upload'
+              className='std-link block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-700'
+              onClick={() => setOpen(false)}
+            >
               Upload
             </Link>
           </div>

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Zierfx',
-  description: 'Yeebob Records',
+  title: 'Zierfx - Yeebob Records',
+  description: 'Discover and stream music from independent artists. Upload your own tracks and build your collection.',
   viewport: 'width=device-width, initial-scale=1',
 };
 

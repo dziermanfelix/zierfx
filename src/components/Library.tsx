@@ -26,7 +26,7 @@ export default function Library({ artists }: Props) {
     if (search) params.set('search', search);
     if (filterBy) params.set('filter', filterBy);
 
-    router.replace(`/?${params.toString()}`);
+    router.replace(`/library?${params.toString()}`);
   }, [search, filterBy]);
 
   const filteredArtists = useMemo(() => {

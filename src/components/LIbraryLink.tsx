@@ -9,7 +9,7 @@ export default function LibraryLink() {
   const search = searchParams.get('search') ?? '';
   const filter = searchParams.get('filter') ?? 'artist';
 
-  const backHref = `/?search=${encodeURIComponent(search)}&filter=${filter}`;
+  const backHref = `/library?search=${encodeURIComponent(search)}&filter=${filter}`;
 
   return (
     <Link href={backHref} className='rounded hover:text-blue-300 px-1 py-1'>
