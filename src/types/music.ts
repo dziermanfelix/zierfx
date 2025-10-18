@@ -1,15 +1,33 @@
-import { Artist, Album, Track } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
-export type ArtistWithAlbumAndTracks = Artist & { albums: (Album & { tracks: Track[] })[] };
+// Let Prisma generate the types based on actual query shapes
+const artistWithAlbumsAndTracks = Prisma.validator<Prisma.ArtistDefaultArgs>()({
+  include: {
+    albums: {
+      include: {
+        tracks: true,
+      },
+    },
+  },
+});
 
-export type AlbumWithTracks = Album & { tracks: Track[] };
+const albumWithTracks = Prisma.validator<Prisma.AlbumDefaultArgs>()({
+  include: {
+    tracks: true,
+  },
+});
 
-export type TrackWithAlbumAndArtist = Track & { album: Album; artist: Artist };
+const trackWithAlbumAndArtist = Prisma.validator<Prisma.TrackDefaultArgs>()({
+  include: {
+    album: {
+      include: {
+        artist: true,
+      },
+    },
+  },
+});
 
-export function makeTrackWithAlbumAndArtist(track: Track, album: Album, artist: Artist) {
-  return {
-    ...track,
-    album,
-    artist,
-  };
-}
+// Export the auto-generated types
+export type ArtistWithAlbumAndTracks = Prisma.ArtistGetPayload<typeof artistWithAlbumsAndTracks>;
+export type AlbumWithTracks = Prisma.AlbumGetPayload<typeof albumWithTracks>;
+export type TrackWithAlbumAndArtist = Prisma.TrackGetPayload<typeof trackWithAlbumAndArtist>;

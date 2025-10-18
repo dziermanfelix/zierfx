@@ -1,9 +1,4 @@
-import {
-  AlbumWithTracks,
-  ArtistWithAlbumAndTracks,
-  makeTrackWithAlbumAndArtist,
-  TrackWithAlbumAndArtist,
-} from '@/types/music';
+import { AlbumWithTracks, ArtistWithAlbumAndTracks, TrackWithAlbumAndArtist } from '@/types/music';
 import Link from 'next/link';
 import { makeAlbumLink } from '@/utils/slugify';
 import { formatDate } from '@/utils/formatting';
@@ -19,9 +14,11 @@ interface AlbumCardProps {
 
 const AlbumCard = ({ artist, album, search, filterBy }: AlbumCardProps) => {
   const isMobile = useIsMobile();
-  const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) =>
-    makeTrackWithAlbumAndArtist(track, album, artist)
-  );
+  const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) => ({
+    ...track,
+    album: { ...album, artist },
+    artist, // Flatten artist for easier access
+  }));
 
   return (
     <Link

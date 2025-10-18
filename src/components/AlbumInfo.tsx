@@ -1,7 +1,7 @@
 'use client';
 
 import { formatDate, formatTime } from '@/utils/formatting';
-import { AlbumWithTracks, makeTrackWithAlbumAndArtist, TrackWithAlbumAndArtist } from '@/types/music';
+import { AlbumWithTracks, TrackWithAlbumAndArtist } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause } from 'lucide-react';
 import AlbumCoverWithPlay from './AlbumCoverWithPlay';
@@ -17,9 +17,11 @@ interface AlbumInfoProps {
 export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
   const isMobile = useIsMobile();
   const { currentIndex, isPlaying, pause, resume, setPlaylistAndPlay } = usePlayer();
-  const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) =>
-    makeTrackWithAlbumAndArtist(track, album, artist)
-  );
+  const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) => ({
+    ...track,
+    album: { ...album, artist },
+    artist, // Flatten artist for easier access
+  }));
 
   const handlePlay = (index: number) => {
     if (index === currentIndex) {
