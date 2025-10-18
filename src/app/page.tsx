@@ -25,9 +25,7 @@ export default async function Home() {
           <div className='text-center space-y-6'>
             <h1 className='text-5xl sm:text-7xl font-bold tracking-tight'>Zierman Felix</h1>
             <p className='text-xl sm:text-2xl font-light text-blue-100'>Yeebob Records</p>
-            <p className='text-lg sm:text-xl max-w-2xl mx-auto text-white/90'>
-              The music of Dustyn Zierman-Felix.
-            </p>
+            <p className='text-lg sm:text-xl max-w-2xl mx-auto text-white/90'>The music of Dustyn Zierman-Felix.</p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center pt-6'>
               <Link
                 href='/library'
@@ -125,9 +123,7 @@ export default async function Home() {
                 </svg>
               </div>
               <h3 className='text-xl font-semibold mb-2'>Browse Discography</h3>
-              <p className='text-gray-600 dark:text-gray-400'>
-                Explore the full collection of albums and releases
-              </p>
+              <p className='text-gray-600 dark:text-gray-400'>Explore the full collection of albums and releases</p>
             </div>
 
             <div className='text-center p-6'>
@@ -141,9 +137,7 @@ export default async function Home() {
                 </svg>
               </div>
               <h3 className='text-xl font-semibold mb-2'>Tour Dates</h3>
-              <p className='text-gray-600 dark:text-gray-400'>
-                Stay updated with upcoming shows and live performances
-              </p>
+              <p className='text-gray-600 dark:text-gray-400'>Stay updated with upcoming shows and live performances</p>
             </div>
           </div>
         </div>
