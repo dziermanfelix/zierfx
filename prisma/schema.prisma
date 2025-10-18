@@ -48,3 +48,14 @@ model TourDate {
   updatedAt   DateTime @updatedAt
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // This will store hashed passwords
+  username  String   @unique
+  name      String?
+  role      String   @default("user") // "admin" or "user"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

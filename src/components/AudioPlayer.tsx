@@ -108,7 +108,7 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
         }`}
       >
         <Link
-          href={`/albums/${slugify(track.artist.name)}/${slugify(track.album.name)}`}
+          href={`/albums/${slugify(track.album.artist.name)}/${slugify(track.album.name)}`}
           className={`std-link ${isMobile ? 'flex-shrink-0' : ''}`}
         >
           <img
@@ -123,9 +123,9 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
           </p>
           <p
             className={`${isMobile ? 'text-sm truncate leading-tight' : 'text-md text-gray-300'}`}
-            title={track.artist.name}
+            title={track.album.artist.name}
           >
-            {track.artist.name}
+            {track.album.artist.name}
           </p>
           <p
             className={`${isMobile ? 'text-sm truncate leading-tight' : 'text-md text-gray-300'}`}
