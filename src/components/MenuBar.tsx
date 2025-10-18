@@ -42,6 +42,13 @@ export default function MenuBar() {
               Library
             </Link>
             <Link
+              href='/tour'
+              className='std-link block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-700'
+              onClick={() => setOpen(false)}
+            >
+              Tour
+            </Link>
+            <Link
               href='/upload'
               className='std-link block px-4 py-2 text-left w-full hover:bg-gray-100 dark:hover:bg-gray-700'
               onClick={() => setOpen(false)}

@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import LibraryLink from '@/components/LIbraryLink';
+import MenuBar from '@/components/MenuBar';
 import { routes } from '@/utils/routes';
 import FileInput from '@/components/FileInput';
 
@@ -51,6 +52,7 @@ export default function UploadPage() {
 
   return (
     <main className='p-8'>
+      <MenuBar />
       <div className='p-2'>
         <Suspense fallback={<div>Loading Upload Page...</div>}>
           <LibraryLink />

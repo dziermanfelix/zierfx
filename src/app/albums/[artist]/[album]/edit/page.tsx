@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import AlbumInfo from '@/components/AlbumInfo';
 import LibraryLink from '@/components/LIbraryLink';
+import MenuBar from '@/components/MenuBar';
 import EditAlbumForm from '@/components/EditAlbumForm';
 import { AlbumWithTracks } from '@/types/music';
 import { Artist } from '@prisma/client';
@@ -35,6 +36,7 @@ export default function EditAlbumPage() {
 
   return (
     <main className='p-8 space-y-4'>
+      <MenuBar />
       <div className='p-2'>
         <LibraryLink />
       </div>

@@ -35,3 +35,16 @@ model Track {
   albumId   Int
 }
 
+model TourDate {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  venue       String
+  city        String
+  state       String?
+  country     String
+  ticketUrl   String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

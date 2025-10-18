@@ -36,6 +36,12 @@ export default async function Home() {
                 Browse Library
               </Link>
               <Link
+                href='/tour'
+                className='bg-purple-500/20 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-3 rounded-full font-semibold hover:bg-purple-500/30 transition-colors'
+              >
+                Tour Dates
+              </Link>
+              <Link
                 href='/upload'
                 className='bg-purple-500/20 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-3 rounded-full font-semibold hover:bg-purple-500/30 transition-colors'
               >
