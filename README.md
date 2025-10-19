@@ -66,12 +66,29 @@ npm test
 - `npm run build`: Build for production
 - `npm run start`: Start production server
 - `npm run lint`: Run ESLint
-- `npm run migrate`: Run database migrations
+- `npm run migrate-dev`: Run database migrations (development)
+- `npm run migrate-deploy`: Run database migrations (production)
 - `npm run studio`: Open Prisma Studio
 - `npm run clean`: Clean database
+- `npm run seed`: Seed database with initial data
 - `npm test`: Run tests
 - `npm run test:watch`: Run tests in watch mode
 - `npm run test:coverage`: Run tests with coverage
+
+## Database Backup
+
+Add these to your `.env.local`:
+
+```bash
+BACKUP_PROD_DB_URL='your-production-url'
+BACKUP_DEV_DB_URL='postgresql://user@localhost:5432/your_local_db'
+```
+
+Then run:
+
+```bash
+./scripts/backup/backup-and-restore.sh
+```
 
 ## Database Schema
 
