@@ -86,14 +86,14 @@ export default function Library({ artists }: Props) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder='Search your library...'
-              className='w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none text-gray-800 placeholder-gray-400'
+              className='w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-black focus:ring-2 focus:ring-gray-300 transition-all outline-none text-gray-800 placeholder-gray-400'
             />
           </div>
           <div className='relative'>
             <select
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value as 'artist' | 'album' | 'track')}
-              className='appearance-none w-full sm:w-auto px-6 py-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all outline-none text-gray-800 font-medium cursor-pointer bg-white'
+              className='appearance-none w-full sm:w-auto px-6 py-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-black focus:ring-2 focus:ring-gray-300 transition-all outline-none text-gray-800 font-medium cursor-pointer bg-white'
             >
               <option value='artist'>🎤 Artist</option>
               <option value='album'>💿 Album</option>
@@ -113,11 +113,11 @@ export default function Library({ artists }: Props) {
         {/* Results Counter */}
         <div className='mt-4 text-sm text-gray-600'>
           {search ? (
-            <span className='bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium'>
+            <span className='bg-gray-200 text-black px-3 py-1 rounded-full font-bold'>
               {totalAlbums} {totalAlbums === 1 ? 'result' : 'results'} found
             </span>
           ) : (
-            <span className='text-gray-500'>
+            <span className='text-gray-600 font-medium'>
               {totalAlbums} {totalAlbums === 1 ? 'album' : 'albums'} in your library
             </span>
           )}

@@ -16,17 +16,15 @@ export default async function LibraryPage() {
   });
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100'>
+    <main className='min-h-screen bg-gradient-to-br from-white via-gray-100 to-gray-200'>
       <div className='max-w-7xl mx-auto px-4 sm:px-8 py-8'>
         {/* Hero Header */}
         <div className='mb-12 text-center'>
           <div className='inline-block'>
-            <h1 className='text-5xl sm:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3'>
-              Music Library
-            </h1>
-            <div className='h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full'></div>
+            <h1 className='text-5xl sm:text-6xl font-bold text-black mb-3'>Music Library</h1>
+            <div className='h-1 bg-gradient-to-r from-black via-gray-700 to-gray-500 rounded-full'></div>
           </div>
-          <p className='mt-4 text-gray-600 text-lg'>Discover and explore your collection</p>
+          <p className='mt-4 text-gray-700 text-lg font-medium'>Discover and explore your collection</p>
         </div>
 
         <Suspense

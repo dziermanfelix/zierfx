@@ -41,7 +41,7 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
       <div className='bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sm:p-8 mb-8 border border-white/20'>
         <div className={`${isMobile ? 'flex flex-col items-center space-y-4' : 'flex flex-row items-center'}`}>
           <div className='relative group'>
-            <div className='absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity'></div>
+            <div className='absolute inset-0 bg-gradient-to-br from-gray-400 to-black rounded-xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity'></div>
             <div className='relative'>
               <AlbumCoverWithPlay tracks={tracks} />
             </div>
@@ -51,13 +51,7 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
               isMobile ? 'flex flex-col text-center space-y-2' : 'flex flex-col ml-8 justify-center space-y-3'
             }`}
           >
-            <h1
-              className={`${
-                isMobile ? 'text-2xl' : 'text-4xl sm:text-5xl'
-              } font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent`}
-            >
-              {album.name}
-            </h1>
+            <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl sm:text-5xl'} font-bold text-black`}>{album.name}</h1>
             <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} text-gray-700 font-semibold`}>{artist.name}</h2>
             <h2 className={`${isMobile ? 'text-base' : 'text-lg'} text-gray-500`}>{formatDate(album.releaseDate)}</h2>
           </div>
@@ -71,15 +65,15 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
           {album.tracks.map((track, index) => (
             <li
               key={track.id}
-              className='group flex items-center justify-between bg-white/50 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 transition-all duration-200 hover:shadow-md border border-transparent hover:border-blue-200'
+              className='group flex items-center justify-between bg-white/50 hover:bg-gray-100 rounded-xl p-4 transition-all duration-200 hover:shadow-md border border-transparent hover:border-gray-400'
               onDoubleClick={() => handlePlay(index)}
             >
               <div className='flex flex-row space-x-4 items-center flex-1 min-w-0'>
                 <button
                   className={`flex-shrink-0 ${
                     isMobile
-                      ? 'text-blue-500 hover:text-purple-600'
-                      : 'opacity-0 group-hover:opacity-100 transition-all duration-200 text-blue-500 hover:text-purple-600 hover:scale-110'
+                      ? 'text-black hover:text-gray-600'
+                      : 'opacity-0 group-hover:opacity-100 transition-all duration-200 text-black hover:text-gray-600 hover:scale-110'
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();

@@ -14,7 +14,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className='bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 shadow-lg sticky top-0 z-50 backdrop-blur-sm'>
+    <nav className='bg-gradient-to-r from-black via-gray-900 to-gray-800 shadow-lg sticky top-0 z-50 backdrop-blur-sm'>
       <div className='flex items-center h-16 max-w-7xl mr-auto pr-4 sm:pr-6 lg:pr-8'>
         {/* Logo Circle */}
         <Link

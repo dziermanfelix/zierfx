@@ -8,10 +8,10 @@
 
 @layer utilities {
   .std-link {
-    @apply border hover:border-blue-300;
+    @apply border hover:border-gray-400;
   }
   .submit-btn {
-    @apply bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed;
+    @apply bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed;
   }
 }
 

@@ -134,7 +134,7 @@ export default function UploadPage() {
             <button
               type='button'
               onClick={() => setTracks([...tracks, { name: '', file: null }])}
-              className='text-blue-600 underline text-sm'
+              className='text-black hover:text-gray-700 underline text-sm font-bold'
             >
               + Add Track
             </button>

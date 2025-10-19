@@ -29,7 +29,7 @@ export default function FileInput({
 
   return (
     <div className={`flex items-center space-x-3 ${widthClass} ${className}`}>
-      <label className='p-1 rounded border border-white cursor-pointer hover:border-blue-300 transition whitespace-nowrap'>
+      <label className='p-1 rounded border border-white cursor-pointer hover:border-gray-400 transition whitespace-nowrap'>
         {label}
         <input type='file' accept={accept} onChange={handleFileChange} className='hidden' required={required} />
       </label>

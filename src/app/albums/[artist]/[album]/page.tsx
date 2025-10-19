@@ -19,7 +19,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   if (!artist || !album) return notFound();
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100'>
+    <main className='min-h-screen bg-gradient-to-br from-white via-gray-100 to-gray-200'>
       <div className='max-w-7xl mx-auto px-4 sm:px-8 py-8'>
         <div className='mb-6'>
           <Suspense fallback={<div className='animate-pulse text-gray-500'>Loading...</div>}>

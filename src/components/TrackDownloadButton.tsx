@@ -41,7 +41,7 @@ export default function TrackDownloadButton({ track }: Props) {
         handleDownload(e, track.audioUrl || undefined);
       }}
       className={`hidden ${
-        downloading ? 'cursor-auto' : 'hover:text-blue-300'
+        downloading ? 'cursor-auto' : 'hover:text-gray-600'
       } group-hover:inline-flex items-center text-sm rounded  transition`}
     >
       {downloading ? <Loader className='animate-spin w-4 h-4' /> : <Download />}

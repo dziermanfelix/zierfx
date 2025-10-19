@@ -51,7 +51,7 @@ export default function TourDateCard({ tourDate }: TourDateCardProps) {
               href={tourDate.ticketUrl}
               target='_blank'
               rel='noopener noreferrer'
-              className='inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors'
+              className='inline-block bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg transition-colors'
             >
               Get Tickets
             </a>

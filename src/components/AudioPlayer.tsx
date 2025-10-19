@@ -146,21 +146,21 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
             onClick={onPrevious}
             className={`${
               isMobile
-                ? 'p-2 rounded-full hover:bg-gray-800 text-gray-300 hover:text-blue-400'
-                : 'px-2 py-1 text-sm rounded-full hover:text-blue-400'
+                ? 'p-2 rounded-full hover:bg-gray-800 text-gray-300 hover:text-white'
+                : 'px-2 py-1 text-sm rounded-full hover:text-white'
             }`}
           >
             <SkipBack className='w-5 h-5' />
           </button>
-          <button onClick={togglePlay} className='p-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white'>
+          <button onClick={togglePlay} className='p-3 rounded-full bg-white hover:bg-gray-200 text-black'>
             {isPlaying ? <Pause className='w-6 h-6' /> : <Play className='w-6 h-6' />}
           </button>
           <button
             onClick={onNext}
             className={`${
               isMobile
-                ? 'p-2 rounded-full hover:bg-gray-800 text-gray-300 hover:text-blue-400'
-                : 'px-2 py-1 text-sm rounded-full hover:text-blue-400'
+                ? 'p-2 rounded-full hover:bg-gray-800 text-gray-300 hover:text-white'
+                : 'px-2 py-1 text-sm rounded-full hover:text-white'
             }`}
           >
             <SkipForward className='w-5 h-5' />
