@@ -19,13 +19,15 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   if (!artist || !album) return notFound();
 
   return (
-    <main className='p-4 sm:p-8 space-y-4'>
-      <div className='p-2'>
-        <Suspense fallback={<div>Loading Album Info...</div>}>
-          <LibraryLink />
-        </Suspense>
+    <main className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-8 py-8'>
+        <div className='mb-6'>
+          <Suspense fallback={<div className='animate-pulse text-gray-500'>Loading...</div>}>
+            <LibraryLink />
+          </Suspense>
+        </div>
+        <AlbumInfo album={album} artist={artist} />
       </div>
-      <AlbumInfo album={album} artist={artist} />
     </main>
   );
 }
