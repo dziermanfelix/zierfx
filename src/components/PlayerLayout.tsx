@@ -2,6 +2,7 @@
 
 import { PlayerProvider, usePlayer } from '@/contexts/PlayerContext';
 import GlobalAudioPlayer from '@/components/GlobalAudioPlayer';
+import Navigation from '@/components/Navigation';
 import { useIsMobile } from '@/utils/mobile';
 
 function PlayerContent({ children }: { children: React.ReactNode }) {
@@ -9,10 +10,13 @@ function PlayerContent({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
 
   return (
-    <div className={currentIndex !== -1 ? (isMobile ? 'pb-32' : 'pb-24') : ''}>
-      {children}
-      <GlobalAudioPlayer />
-    </div>
+    <>
+      <Navigation />
+      <div className={currentIndex !== -1 ? (isMobile ? 'pb-32' : 'pb-24') : ''}>
+        {children}
+        <GlobalAudioPlayer />
+      </div>
+    </>
   );
 }
 

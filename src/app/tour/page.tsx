@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic';
 import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
 import TourDateCard from '@/components/TourDateCard';
-import MenuBar from '@/components/MenuBar';
 
 export default async function TourPage() {
   const tourDates = await db.tourDate.findMany({
@@ -19,7 +18,6 @@ export default async function TourPage() {
 
   return (
     <main className='p-4 sm:p-8'>
-      <MenuBar />
       <div className='max-w-4xl mx-auto'>
         <div className='mb-8'>
           <h1 className='text-4xl font-bold mb-2'>Tour Dates</h1>

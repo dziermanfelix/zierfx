@@ -67,7 +67,7 @@ JWT_SECRET=random_secret_key
 
 ### Login
 
-1. Navigate to `/login` or click "Login" in the menu
+1. Navigate to `/login`
 2. Enter username and password
 3. On successful login, redirected to the page you were trying to access (or home)
 
@@ -80,15 +80,17 @@ When not logged in, attempting to access these routes will redirect to the login
 
 ### Logout
 
-- Click "Logout" in the menu (only visible when logged in)
-- Or navigate to any protected route and you'll be redirected to login
+- Navigate to any protected route when not logged in and you'll be redirected to login page
 
-## Menu Bar Updates
+## Navigation Bar
 
-The menu bar now shows:
+The navigation bar shows consistent links across all pages:
 
-- **When logged out**: "Login" link
-- **When logged in**: "Upload" link and "Logout" button
+- **Home**
+- **Library**
+- **Tour**
+
+Additional features can be added to the navigation as needed.
 
 ## Code Structure
 
@@ -106,7 +108,7 @@ src/
 │       └── page.tsx               # Login page UI
 ├── middleware.ts                  # Route protection
 └── components/
-    └── MenuBar.tsx                # Updated with auth status
+    └── Navigation.tsx             # Global navigation bar
 ```
 
 ## Security Notes
@@ -125,8 +127,7 @@ To test the authentication:
 2. Try to access `/upload` (should redirect to login)
 3. Login with username `dust` and password `dust`
 4. You should be redirected back to `/upload`
-5. Menu should now show "Upload" and "Logout"
-6. Click logout to end session
+5. Navigate using the top navigation bar (Home, Library, Tour)
 
 ## Future Enhancements
 
@@ -138,4 +139,3 @@ Possible additions:
 - Session management (view/revoke active sessions)
 - Two-factor authentication
 - User management page (create/edit/delete users)
-
