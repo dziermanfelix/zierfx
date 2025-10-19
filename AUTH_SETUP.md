@@ -45,10 +45,19 @@ An admin user has been created using the credentials from your `.env` file:
 
 ### To Change Admin Credentials
 
+**Option 1: Using seed script (local development)**
+
 1. Update `ADMIN_USER` and `ADMIN_PASS` in your `.env` file
 2. Run: `npm run seed`
 
 Note: The seed script will skip creation if the user already exists.
+
+**Option 2: Using ensure-admin script (recommended for production)**
+
+1. Set `ADMIN_USER` and `ADMIN_PASS` in your environment
+2. Run: `npm run ensure-admin`
+
+The ensure-admin script will update the password if the user already exists, making it ideal for password updates in production. See [scripts/README.md](./scripts/README.md) for more details.
 
 ## Environment Variables
 

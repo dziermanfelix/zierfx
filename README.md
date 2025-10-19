@@ -71,9 +71,40 @@ npm test
 - `npm run studio`: Open Prisma Studio
 - `npm run clean`: Clean database
 - `npm run seed`: Seed database with initial data
+- `npm run ensure-admin`: Create or update admin user credentials
 - `npm test`: Run tests
 - `npm run test:watch`: Run tests in watch mode
 - `npm run test:coverage`: Run tests with coverage
+
+## Admin User Management
+
+To ensure an admin user exists in your database (useful for production deployments):
+
+1. Set required environment variables in `.env.local`:
+
+   ```bash
+   ADMIN_USER='your_admin_username'
+   ADMIN_PASS='your_secure_password'
+   ADMIN_EMAIL='admin@yourdomain.com' # optional
+   ```
+
+2. Run the ensure-admin script:
+
+   ```bash
+   # For local database
+   npm run ensure-admin
+
+   # For production (with shell script)
+   PROD_DATABASE_URL='your-prod-url' ./scripts/ensure-admin.sh
+   ```
+
+This script is idempotent and safe to run multiple times. It will:
+
+- Create the admin user if it doesn't exist
+- Update the password if it has changed
+- Ensure the user has admin role
+
+See [scripts/README.md](./scripts/README.md) for more details.
 
 ## Database Backup
 

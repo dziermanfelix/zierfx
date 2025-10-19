@@ -15,6 +15,7 @@
     "studio": "npx prisma studio",
     "clean": "ts-node prisma/clean.ts",
     "seed": "ts-node prisma/seed.ts",
+    "ensure-admin": "ts-node scripts/ensure-admin.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
