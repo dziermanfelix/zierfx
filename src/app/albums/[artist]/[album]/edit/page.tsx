@@ -1,18 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import AlbumInfo from '@/components/AlbumInfo';
 import LibraryLink from '@/components/LIbraryLink';
 import EditAlbumForm from '@/components/EditAlbumForm';
 import { AlbumWithTracks } from '@/types/music';
 import { Artist } from '@prisma/client';
+import { routes } from '@/utils/routes';
 
 export default function EditAlbumPage() {
+  const router = useRouter();
   const { artist: artistParam, album: albumParam } = useParams() as { artist: string; album: string };
   const [album, setAlbum] = useState<AlbumWithTracks>();
   const [artist, setArtist] = useState<Artist>();
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push(routes.HOME);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -35,8 +42,11 @@ export default function EditAlbumPage() {
 
   return (
     <main className='p-8 space-y-4'>
-      <div className='p-2'>
+      <div className='p-2 flex justify-between items-center'>
         <LibraryLink />
+        <button onClick={handleLogout} className='text-sm text-gray-600 hover:text-gray-800 underline'>
+          Logout
+        </button>
       </div>
 
       <div className='border rounded p-2 m-2'>

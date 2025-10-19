@@ -15,6 +15,11 @@ export default function UploadPage() {
   const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<{ name: string; file: File | null }[]>([{ name: '', file: null }]);
 
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push(routes.HOME);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploading(true);
@@ -52,7 +57,12 @@ export default function UploadPage() {
   return (
     <main className='p-8'>
       <div className='max-w-xl mx-auto space-y-4'>
-        <h1 className='text-2xl font-bold'>New Release</h1>
+        <div className='flex justify-between items-center'>
+          <h1 className='text-2xl font-bold'>New Release</h1>
+          <button onClick={handleLogout} className='text-sm text-gray-600 hover:text-gray-800 underline'>
+            Logout
+          </button>
+        </div>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <input
             type='text'
