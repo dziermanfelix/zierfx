@@ -40,8 +40,34 @@ export default async function LivePage() {
             </div>
           )}
         </Suspense>
+
+        {/* Videos Section */}
+        <div className='mt-16 border-t border-gray-200 dark:border-gray-800 pt-12'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+            {/* Video 1 */}
+            <div className='aspect-video w-full'>
+              <iframe
+                className='w-full h-full rounded-lg shadow-lg'
+                src='https://www.youtube.com/embed/0S93YELBZ50'
+                title='YouTube video player'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                allowFullScreen
+              />
+            </div>
+
+            {/* Video 2 */}
+            <div className='aspect-video w-full'>
+              <iframe
+                className='w-full h-full rounded-lg shadow-lg'
+                src='https://www.youtube.com/embed/g_c7m4SFNQU'
+                title='YouTube video player'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
 }
-
