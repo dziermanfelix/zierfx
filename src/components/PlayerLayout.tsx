@@ -12,7 +12,7 @@ function PlayerContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navigation />
-      <div className={currentIndex !== -1 ? (isMobile ? 'pb-32' : 'pb-24') : ''}>
+      <div className={currentIndex !== -1 ? (isMobile ? 'pb-36' : 'pb-24') : ''}>
         {children}
         <GlobalAudioPlayer />
       </div>
