@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: 'Zierman Felix',
   description: 'Yeebob Records',
   viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: '/Logo_WhiteTransparent.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
