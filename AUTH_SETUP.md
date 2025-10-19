@@ -87,7 +87,7 @@ When not logged in, attempting to access these routes will redirect to the login
 The navigation bar shows consistent links across all pages:
 
 - **Home**
-- **Library**
+- **Music**
 - **Live**
 
 Additional features can be added to the navigation as needed.
@@ -127,7 +127,7 @@ To test the authentication:
 2. Try to access `/upload` (should redirect to login)
 3. Login with username `dust` and password `dust`
 4. You should be redirected back to `/upload`
-5. Navigate using the top navigation bar (Home, Library, Live)
+5. Navigate using the top navigation bar (Home, Music, Live)
 
 ## Future Enhancements
 

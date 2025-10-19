@@ -28,7 +28,7 @@ export default async function Home() {
             <p className='text-lg sm:text-xl max-w-2xl mx-auto text-gray-200'>The music of Dustyn Zierman-Felix.</p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center pt-6'>
               <Link
-                href='/library'
+                href='/music'
                 className='bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition-colors shadow-lg'
               >
                 Listen Now
@@ -49,7 +49,7 @@ export default async function Home() {
         <div className='max-w-7xl mx-auto'>
           <div className='flex justify-between items-center mb-8'>
             <h2 className='text-3xl sm:text-4xl font-bold'>Recent Releases</h2>
-            <Link href='/library' className='text-black hover:text-gray-700 font-bold flex items-center gap-2'>
+            <Link href='/music' className='text-black hover:text-gray-700 font-bold flex items-center gap-2'>
               View All
               <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />

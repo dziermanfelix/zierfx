@@ -21,7 +21,7 @@ export default async function LibraryPage() {
         {/* Hero Header */}
         <div className='mb-12 text-center'>
           <div className='inline-block'>
-            <h1 className='text-5xl sm:text-6xl font-bold text-black mb-3'>Music Library</h1>
+            <h1 className='text-5xl sm:text-6xl font-bold text-black mb-3'>Music</h1>
             <div className='h-1 bg-gradient-to-r from-black via-gray-700 to-gray-500 rounded-full'></div>
           </div>
           <p className='mt-4 text-gray-700 text-lg font-medium'>Discover and explore your collection</p>

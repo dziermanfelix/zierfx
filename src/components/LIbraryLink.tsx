@@ -9,7 +9,7 @@ export default function LibraryLink() {
   const search = searchParams.get('search') ?? '';
   const filter = searchParams.get('filter') ?? 'artist';
 
-  const backHref = `/library?search=${encodeURIComponent(search)}&filter=${filter}`;
+  const backHref = `/music?search=${encodeURIComponent(search)}&filter=${filter}`;
 
   return (
     <Link
