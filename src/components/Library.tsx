@@ -95,9 +95,9 @@ export default function Library({ artists }: Props) {
               onChange={(e) => setFilterBy(e.target.value as 'artist' | 'album' | 'track')}
               className='appearance-none w-full sm:w-auto px-6 py-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-black focus:ring-2 focus:ring-gray-300 transition-all outline-none text-gray-800 font-medium cursor-pointer bg-white'
             >
-              <option value='artist'>🎤 Artist</option>
-              <option value='album'>💿 Album</option>
-              <option value='track'>🎵 Track</option>
+              <option value='artist'>Artist</option>
+              <option value='album'>Album</option>
+              <option value='track'>Track</option>
             </select>
             <svg
               className='absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none'
