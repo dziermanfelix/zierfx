@@ -1,4 +1,4 @@
-# Zierfx
+# Zierman Felix
 
 A music library management application built with Next.js, Prisma, and Supabase.
 
