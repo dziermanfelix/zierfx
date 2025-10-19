@@ -18,7 +18,12 @@ export const metadata: Metadata = {
   description: 'Yeebob Records',
   viewport: 'width=device-width, initial-scale=1',
   icons: {
-    icon: '/Logo_WhiteTransparent.png',
+    icon: [
+      { url: '/Logo_WhiteTransparent.png?v=2', sizes: 'any' },
+      { url: '/Logo_WhiteTransparent.png?v=2', sizes: '32x32', type: 'image/png' },
+      { url: '/Logo_WhiteTransparent.png?v=2', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/Logo_WhiteTransparent.png?v=2',
   },
 };
 
