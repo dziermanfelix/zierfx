@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { routes } from '@/utils/routes';
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,19 +12,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   const redirect = searchParams.get('redirect') || routes.HOME;
-
-  useEffect(() => {
-    // Check if already logged in
-    fetch('/api/auth/check')
-      .then((res) => {
-        if (res.ok) {
-          router.replace(redirect);
-        }
-      })
-      .catch(() => {
-        // Not logged in, stay on login page
-      });
-  }, [router, redirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +23,7 @@ function LoginForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
+        credentials: 'same-origin',
       });
 
       const data = await res.json();
@@ -47,9 +34,10 @@ function LoginForm() {
         return;
       }
 
-      // Successful login
-      router.replace(redirect);
+      // Successful login - hard navigate to ensure middleware sees the cookie
+      window.location.href = redirect;
     } catch (err) {
+      console.error('Login error:', err);
       setError('Something went wrong. Please try again.');
       setLoading(false);
     }

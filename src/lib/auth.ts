@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -10,21 +10,47 @@ export interface AuthPayload {
   role: string;
 }
 
-export function createAuthToken(payload: AuthPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+// Convert secret to Uint8Array for jose
+const getSecretKey = () => new TextEncoder().encode(JWT_SECRET);
+
+export async function createAuthToken(payload: AuthPayload): Promise<string> {
+  const token = await new SignJWT({
+    userId: payload.userId,
+    username: payload.username,
+    role: payload.role,
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(getSecretKey());
+  return token;
 }
 
-export function verifyAuthToken(token: string): AuthPayload | null {
+export async function verifyAuthToken(token: string): Promise<AuthPayload | null> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as AuthPayload;
-    return decoded;
-  } catch {
+    const { payload } = await jwtVerify(token, getSecretKey());
+
+    // Validate that payload has expected fields
+    if (
+      typeof payload.userId === 'number' &&
+      typeof payload.username === 'string' &&
+      typeof payload.role === 'string'
+    ) {
+      return {
+        userId: payload.userId,
+        username: payload.username,
+        role: payload.role,
+      };
+    }
+
+    return null;
+  } catch (error) {
     return null;
   }
 }
 
 export async function setAuthCookie(payload: AuthPayload) {
-  const token = createAuthToken(payload);
+  const token = await createAuthToken(payload);
   const cookieStore = await cookies();
 
   cookieStore.set(TOKEN_NAME, token, {
@@ -69,4 +95,3 @@ export async function requireAdmin(): Promise<AuthPayload> {
 
   return auth;
 }
-

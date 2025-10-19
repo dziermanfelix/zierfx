@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { db } from '@/lib/prisma';
-import { setAuthCookie } from '@/lib/auth';
+import { createAuthToken } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
@@ -29,14 +29,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Set auth cookie
-    await setAuthCookie({
+    // Create auth token
+    const token = await createAuthToken({
       userId: user.id,
       username: user.username,
       role: user.role,
     });
 
-    return NextResponse.json({
+    // Create response
+    const response = NextResponse.json({
       success: true,
       user: {
         id: user.id,
@@ -45,6 +46,17 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
+
+    // Set cookie on response object
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+    });
+
+    return response;
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

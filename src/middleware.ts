@@ -2,12 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAuthToken } from '@/lib/auth';
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const token = req.cookies.get('auth-token');
 
   // Check if user is authenticated
-  if (!token || !verifyAuthToken(token.value)) {
-    // Redirect to login page with return URL
+  if (!token) {
+    const loginUrl = new URL('/login', req.url);
+    loginUrl.searchParams.set('redirect', req.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  const verified = await verifyAuthToken(token.value);
+
+  if (!verified) {
     const loginUrl = new URL('/login', req.url);
     loginUrl.searchParams.set('redirect', req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
