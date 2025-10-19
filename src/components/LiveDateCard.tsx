@@ -1,13 +1,13 @@
 'use client';
 
-import { TourDate } from '@prisma/client';
+import { LiveDate } from '@prisma/client';
 
-interface TourDateCardProps {
-  tourDate: TourDate;
+interface LiveDateCardProps {
+  liveDate: LiveDate;
 }
 
-export default function TourDateCard({ tourDate }: TourDateCardProps) {
-  const dateObj = new Date(tourDate.date);
+export default function LiveDateCard({ liveDate }: LiveDateCardProps) {
+  const dateObj = new Date(liveDate.date);
   const formattedDate = dateObj.toLocaleDateString('en-US', {
     weekday: 'short',
     year: 'numeric',
@@ -32,23 +32,23 @@ export default function TourDateCard({ tourDate }: TourDateCardProps) {
               </div>
             </div>
             <div className='flex-1'>
-              <h3 className='text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100'>{tourDate.venue}</h3>
+              <h3 className='text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100'>{liveDate.venue}</h3>
               <p className='text-gray-600 dark:text-gray-400'>
-                {tourDate.city}
-                {tourDate.state && `, ${tourDate.state}`}
-                {tourDate.country && ` • ${tourDate.country}`}
+                {liveDate.city}
+                {liveDate.state && `, ${liveDate.state}`}
+                {liveDate.country && ` • ${liveDate.country}`}
               </p>
-              {tourDate.description && (
-                <p className='text-sm text-gray-500 dark:text-gray-500 mt-2'>{tourDate.description}</p>
+              {liveDate.description && (
+                <p className='text-sm text-gray-500 dark:text-gray-500 mt-2'>{liveDate.description}</p>
               )}
               <p className='text-sm text-gray-500 dark:text-gray-500 mt-1'>{formattedTime}</p>
             </div>
           </div>
         </div>
-        {tourDate.ticketUrl && (
+        {liveDate.ticketUrl && (
           <div className='sm:ml-4'>
             <a
-              href={tourDate.ticketUrl}
+              href={liveDate.ticketUrl}
               target='_blank'
               rel='noopener noreferrer'
               className='inline-block bg-black hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg transition-colors'
@@ -61,3 +61,4 @@ export default function TourDateCard({ tourDate }: TourDateCardProps) {
     </div>
   );
 }
+

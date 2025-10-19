@@ -34,10 +34,10 @@ export default async function Home() {
                 Listen Now
               </Link>
               <Link
-                href='/tour'
+                href='/live'
                 className='bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-3 rounded-full font-bold hover:bg-white/20 transition-colors'
               >
-                Tour Dates
+                Live Shows
               </Link>
             </div>
           </div>
