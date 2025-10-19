@@ -118,7 +118,7 @@ export default function Library({ artists }: Props) {
             </span>
           ) : (
             <span className='text-gray-600 font-medium'>
-              {totalAlbums} {totalAlbums === 1 ? 'album' : 'albums'} in your library
+              {totalAlbums} {totalAlbums === 1 ? 'release' : 'releases'}
             </span>
           )}
         </div>
