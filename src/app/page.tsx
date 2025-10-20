@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { db } from '@/lib/prisma';
 import Link from 'next/link';
 import { formatDate } from '@/utils/formatting';
+import ConnectSection from '@/components/ConnectSection';
 
 export default async function Home() {
   // Get recent albums (latest 6)
@@ -110,6 +111,13 @@ export default async function Home() {
               allowFullScreen
             ></iframe>
           </div>
+        </div>
+      </section>
+
+      {/* Connect Section */}
+      <section className='py-16 px-4 sm:px-8'>
+        <div className='max-w-4xl mx-auto'>
+          <ConnectSection />
         </div>
       </section>
     </main>
