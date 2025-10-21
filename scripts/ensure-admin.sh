@@ -80,3 +80,4 @@ npm run ensure-admin
 echo ""
 echo "✨ Script completed!"
 
+

@@ -209,3 +209,4 @@ if (!passwordMatch) {
 
 - [scripts/README.md](./README.md) - Detailed script documentation
 - [../AUTH_SETUP.md](../AUTH_SETUP.md) - Authentication system overview
+
