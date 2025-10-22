@@ -4,7 +4,7 @@ import { formatDate, formatTime } from '@/utils/formatting';
 import { AlbumWithTracks, TrackWithAlbumAndArtist } from '@/types/music';
 import { usePlayer } from '@/contexts/PlayerContext';
 import { Play, Pause } from 'lucide-react';
-import AlbumCoverWithPlay from './AlbumCoverWithPlay';
+import AlbumCoverWithPlayButton from './AlbumCoverWithPlayButton';
 import { Artist } from '@prisma/client';
 import TrackDownloadButton from './TrackDownloadButton';
 import { useIsMobile } from '@/utils/mobile';
@@ -43,7 +43,12 @@ export default function AlbumInfo({ album, artist }: AlbumInfoProps) {
           <div className='relative group'>
             <div className='absolute inset-0 bg-gradient-to-br from-gray-400 to-black rounded-xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity'></div>
             <div className='relative'>
-              <AlbumCoverWithPlay tracks={tracks} />
+              <AlbumCoverWithPlayButton
+                tracks={tracks}
+                dim={300}
+                albumName={album.name}
+                artworkUrl={album.artworkUrl}
+              />
             </div>
           </div>
           <div

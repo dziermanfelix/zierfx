@@ -4,10 +4,8 @@ import { AlbumWithTracks, ArtistWithAlbumAndTracks, TrackWithAlbumAndArtist } fr
 import Link from 'next/link';
 import { makeAlbumLink } from '@/utils/slugify';
 import { formatDate } from '@/utils/formatting';
-import AlbumCover from './AlbumCover';
+import AlbumCoverWithPlayButton from './AlbumCoverWithPlayButton';
 import { useIsMobile } from '@/utils/mobile';
-import { Play } from 'lucide-react';
-import { usePlayer } from '@/contexts/PlayerContext';
 
 interface AlbumCardProps {
   artist: ArtistWithAlbumAndTracks;
@@ -18,7 +16,6 @@ interface AlbumCardProps {
 
 const AlbumCard = ({ artist, album, search, filterBy }: AlbumCardProps) => {
   const isMobile = useIsMobile();
-  const { setPlaylistAndPlay } = usePlayer();
 
   const tracks: TrackWithAlbumAndArtist[] = album.tracks.map((track) => ({
     ...track,
@@ -26,29 +23,18 @@ const AlbumCard = ({ artist, album, search, filterBy }: AlbumCardProps) => {
     artist, // Flatten artist for easier access
   }));
 
-  const handlePlayClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setPlaylistAndPlay(tracks, 0);
-  };
-
   return (
     <div className='group relative bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-black hover:-translate-y-1'>
       <Link key={album.id} href={makeAlbumLink(artist.slug, album.slug, search, filterBy)} className='block'>
         <div className='p-4'>
-          {/* Album Cover */}
-          <div className='relative overflow-hidden rounded-xl mb-4 aspect-square'>
-            <div className='absolute inset-0 bg-gradient-to-br from-gray-300/20 to-gray-700/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10'></div>
-            <AlbumCover src={album.artworkUrl} alt={album.name} dim={isMobile ? 280 : 280} />
-
-            {/* Play Button Overlay */}
-            <button
-              onClick={handlePlayClick}
-              className='absolute bottom-3 right-3 bg-black hover:bg-gray-800 text-white rounded-full p-3 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 z-20'
-              aria-label={`Play ${album.name}`}
-            >
-              <Play className='w-5 h-5' fill='white' />
-            </button>
+          {/* Album Cover with Play Button */}
+          <div className='mb-4'>
+            <AlbumCoverWithPlayButton
+              tracks={tracks}
+              dim={isMobile ? 280 : 280}
+              albumName={album.name}
+              artworkUrl={album.artworkUrl}
+            />
           </div>
 
           {/* Album Info */}
@@ -66,17 +52,6 @@ const AlbumCard = ({ artist, album, search, filterBy }: AlbumCardProps) => {
           </div>
         </div>
       </Link>
-
-      {/* Mobile Play Button - Always Visible */}
-      {isMobile && (
-        <button
-          onClick={handlePlayClick}
-          className='absolute bottom-4 right-4 bg-black hover:bg-gray-800 text-white rounded-full p-3 shadow-lg active:scale-95 transition-transform z-20'
-          aria-label={`Play ${album.name}`}
-        >
-          <Play className='w-5 h-5' fill='white' />
-        </button>
-      )}
     </div>
   );
 };
