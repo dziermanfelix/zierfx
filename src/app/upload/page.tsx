@@ -1,160 +1,379 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import LibraryLink from '@/components/LIbraryLink';
 import { routes } from '@/utils/routes';
-import FileInput from '@/components/FileInput';
+import EnhancedFileInput from '@/components/EnhancedFileInput';
+import TrackUploadItem, { Track } from '@/components/TrackUploadItem';
+import ProgressBar from '@/components/ProgressBar';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useUploadProgress } from '@/hooks/useUploadProgress';
+import { ToastProvider, useToast } from '@/components/ToastContainer';
 
-export default function UploadPage() {
+interface UploadFormData {
+  artist: string;
+  album: string;
+  releaseDate: string;
+  tracks: Track[];
+}
+
+function UploadPageContent() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [uploading, setUploading] = useState(false);
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [artwork, setArtwork] = useState<File | null>(null);
-  const [tracks, setTracks] = useState<{ name: string; file: File | null }[]>([{ name: '', file: null }]);
+  const [tracks, setTracks] = useState<Track[]>([{ name: '', file: null }]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const { fileProgresses, overallProgress, initializeFiles, updateFileProgress, reset } = useUploadProgress();
+  const [draftData, saveDraft, clearDraft] = useLocalStorage<UploadFormData | null>('upload-draft', null);
+
+  // Load draft on mount
+  useEffect(() => {
+    if (draftData) {
+      setArtist(draftData.artist);
+      setAlbum(draftData.album);
+      setReleaseDate(draftData.releaseDate);
+      setTracks(draftData.tracks.length > 0 ? draftData.tracks : [{ name: '', file: null }]);
+      showToast('Draft loaded', 'info');
+    }
+  }, []);
+
+  // Auto-save draft
+  useEffect(() => {
+    if (artist || album || releaseDate || tracks.some((t) => t.name)) {
+      setHasUnsavedChanges(true);
+      const timer = setTimeout(() => {
+        saveDraft({ artist, album, releaseDate, tracks });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [artist, album, releaseDate, tracks]);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges && !uploading) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges, uploading]);
 
   const handleLogout = async () => {
+    if (hasUnsavedChanges && !confirm('You have unsaved changes. Are you sure you want to logout?')) {
+      return;
+    }
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push(routes.HOME);
   };
 
+  const validateForm = (): string | null => {
+    if (!artist.trim()) return 'Artist name is required';
+    if (!album.trim()) return 'Album name is required';
+    if (!releaseDate) return 'Release date is required';
+    if (!artwork) return 'Album artwork is required';
+    if (tracks.length === 0) return 'At least one track is required';
+
+    for (let i = 0; i < tracks.length; i++) {
+      if (!tracks[i].name.trim()) return `Track ${i + 1} name is required`;
+      if (!tracks[i].file) return `Track ${i + 1} file is required`;
+    }
+
+    return null;
+  };
+
+  const simulateUploadProgress = async (fileName: string, file: File): Promise<void> => {
+    return new Promise((resolve) => {
+      updateFileProgress(fileName, 0, 'uploading');
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 30;
+        if (progress >= 100) {
+          progress = 100;
+          updateFileProgress(fileName, 100, 'complete');
+          clearInterval(interval);
+          resolve();
+        } else {
+          updateFileProgress(fileName, progress, 'uploading');
+        }
+      }, 200);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const validationError = validateForm();
+    if (validationError) {
+      showToast(validationError, 'error');
+      return;
+    }
+
     setUploading(true);
+    reset();
 
-    const formData = new FormData();
+    try {
+      // Initialize progress tracking
+      const fileNames = [artwork!.name, ...tracks.map((t, i) => t.file?.name || `Track ${i + 1}`)];
+      initializeFiles(fileNames);
 
-    formData.append('artist', artist);
-    formData.append('album', album);
-    formData.append('releaseDate', releaseDate);
+      const formData = new FormData();
+      formData.append('artist', artist);
+      formData.append('album', album);
+      formData.append('releaseDate', releaseDate);
 
-    if (artwork) {
-      formData.append('artwork', artwork);
-    }
-
-    tracks.forEach((track, index) => {
-      formData.append(`tracks[${index}][name]`, track.name);
-      if (track.file) {
-        formData.append(`tracks[${index}][file]`, track.file);
+      if (artwork) {
+        formData.append('artwork', artwork);
+        await simulateUploadProgress(artwork.name, artwork);
       }
-    });
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+      for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i];
+        formData.append(`tracks[${i}][name]`, track.name);
+        if (track.file) {
+          formData.append(`tracks[${i}][file]`, track.file);
+          await simulateUploadProgress(track.file.name, track.file);
+        }
+      }
 
-    if (res.ok) {
-      router.replace(routes.HOME);
-    } else {
-      alert('Something went wrong.');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        showToast('Album uploaded successfully!', 'success');
+        clearDraft();
+        setHasUnsavedChanges(false);
+        setTimeout(() => {
+          router.replace(routes.MUSIC);
+        }, 1500);
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Upload failed. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      showToast('An error occurred during upload. Please try again.', 'error');
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
+  };
+
+  const addTrack = () => {
+    setTracks([...tracks, { name: '', file: null }]);
+  };
+
+  const updateTrack = (index: number, track: Track) => {
+    const updated = [...tracks];
+    updated[index] = track;
+    setTracks(updated);
+  };
+
+  const deleteTrack = (index: number) => {
+    if (tracks.length === 1) {
+      showToast('Cannot delete the last track', 'warning');
+      return;
+    }
+    const updated = [...tracks];
+    updated.splice(index, 1);
+    setTracks(updated);
+    showToast('Track deleted', 'info');
+  };
+
+  const moveTrackUp = (index: number) => {
+    if (index === 0) return;
+    const updated = [...tracks];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setTracks(updated);
+  };
+
+  const moveTrackDown = (index: number) => {
+    if (index === tracks.length - 1) return;
+    const updated = [...tracks];
+    [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
+    setTracks(updated);
+  };
+
+  const clearForm = () => {
+    if (!confirm('Are you sure you want to clear the form? This cannot be undone.')) {
+      return;
+    }
+    setArtist('');
+    setAlbum('');
+    setReleaseDate('');
+    setArtwork(null);
+    setTracks([{ name: '', file: null }]);
+    clearDraft();
+    setHasUnsavedChanges(false);
+    showToast('Form cleared', 'info');
   };
 
   return (
-    <main className='p-8'>
-      <div className='max-w-xl mx-auto space-y-4'>
-        <div className='flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>New Release</h1>
-          <button onClick={handleLogout} className='text-sm text-gray-600 hover:text-gray-800 underline'>
-            Logout
-          </button>
+    <main className='p-8 min-h-screen bg-gray-50'>
+      <div className='max-w-4xl mx-auto space-y-6'>
+        {/* Header */}
+        <div className='bg-white rounded-lg shadow-sm p-6'>
+          <div className='flex justify-between items-center'>
+            <div>
+              <h1 className='text-3xl font-bold text-gray-900'>New Release</h1>
+              <p className='text-sm text-gray-500 mt-1'>Upload your music to the library</p>
+            </div>
+            <div className='flex space-x-3'>
+              {hasUnsavedChanges && !uploading && (
+                <button onClick={clearForm} className='text-sm text-gray-600 hover:text-gray-800 underline'>
+                  Clear Draft
+                </button>
+              )}
+              <button onClick={handleLogout} className='text-sm text-gray-600 hover:text-gray-800 underline'>
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
-        <form onSubmit={handleSubmit} className='space-y-4'>
-          <input
-            type='text'
-            placeholder='Artist Name'
-            value={artist}
-            onChange={(e) => setArtist(e.target.value)}
-            className='border p-2 w-full rounded'
-            required
-          />
 
-          <input
-            type='text'
-            placeholder='Album Name'
-            value={album}
-            onChange={(e) => setAlbum(e.target.value)}
-            className='border p-2 w-full rounded'
-            required
-          />
-
-          <input
-            type='date'
-            value={releaseDate}
-            onChange={(e) => setReleaseDate(e.target.value)}
-            className='border p-2 w-full rounded'
-            required
-          />
-
-          <FileInput
-            className='pt-4 pb-4 w-full'
-            accept='image/*'
-            label='Album Artwork'
-            onChange={(file) => setArtwork(file)}
-          />
-
-          <div className='space-y-2'>
-            <p className='font-medium'>Tracks:</p>
-            {tracks.map((track, index) => (
-              <div key={index} className='p-1 w-full space-y-1'>
-                <div className='flex flex-row space-x-2'>
-                  <input
-                    type='text'
-                    placeholder={`Track ${index + 1} name`}
-                    value={track.name}
-                    onChange={(e) => {
-                      const updated = [...tracks];
-                      updated[index].name = e.target.value;
-                      setTracks(updated);
-                    }}
-                    className='border p-2 rounded w-full'
-                    required
-                  />
-
-                  <button
-                    type='button'
-                    className='std-link rounded p-1 text-red-600 text-sm'
-                    onClick={() => {
-                      const updated = [...tracks];
-                      updated.splice(index, 1);
-                      setTracks(updated);
-                    }}
-                  >
-                    Delete
-                  </button>
+        {/* Upload Progress */}
+        {uploading && (
+          <div className='bg-white rounded-lg shadow-sm p-6 space-y-4'>
+            <h2 className='text-lg font-semibold'>Upload Progress</h2>
+            <ProgressBar progress={overallProgress} label='Overall Progress' />
+            <div className='space-y-2'>
+              {fileProgresses.map((file) => (
+                <div key={file.name} className='flex items-center space-x-3'>
+                  <div className='flex-1'>
+                    <ProgressBar progress={file.progress} label={file.name} showPercentage={false} />
+                  </div>
+                  <span className='text-xs text-gray-500 w-20 text-right'>
+                    {file.status === 'complete' && 'Complete'}
+                    {file.status === 'uploading' && `${Math.round(file.progress)}%`}
+                    {file.status === 'pending' && 'Pending'}
+                    {file.status === 'error' && 'Error'}
+                  </span>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-                <FileInput
-                  className='w-full pt-2'
-                  accept='audio/*'
-                  label={`Track ${index + 1} File`}
-                  onChange={(file) => {
-                    const updated = [...tracks];
-                    updated[index].file = file;
-                    setTracks(updated);
-                  }}
-                  required
-                />
-              </div>
-            ))}
-            <button
-              type='button'
-              onClick={() => setTracks([...tracks, { name: '', file: null }])}
-              className='text-black hover:text-gray-700 underline text-sm font-bold'
-            >
-              + Add Track
-            </button>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className='space-y-6'>
+          {/* Album Info */}
+          <div className='bg-white rounded-lg shadow-sm p-6 space-y-4'>
+            <h2 className='text-lg font-semibold text-gray-900'>Album Information</h2>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Artist Name *</label>
+              <input
+                type='text'
+                placeholder='Enter artist name'
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                required
+                disabled={uploading}
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Album Name *</label>
+              <input
+                type='text'
+                placeholder='Enter album name'
+                value={album}
+                onChange={(e) => setAlbum(e.target.value)}
+                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                required
+                disabled={uploading}
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Release Date *</label>
+              <input
+                type='date'
+                value={releaseDate}
+                onChange={(e) => setReleaseDate(e.target.value)}
+                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                required
+                disabled={uploading}
+              />
+            </div>
           </div>
 
-          <button disabled={uploading} type='submit' className='submit-btn'>
-            {uploading ? 'Uploading...' : 'Upload'}
-          </button>
+          {/* Artwork */}
+          <div className='bg-white rounded-lg shadow-sm p-6'>
+            <h2 className='text-lg font-semibold text-gray-900 mb-4'>Album Artwork *</h2>
+            <EnhancedFileInput
+              accept='image/*'
+              label='Upload Album Artwork'
+              type='image'
+              showPreview={true}
+              onChange={(file) => setArtwork(file)}
+              required
+            />
+          </div>
+
+          {/* Tracks */}
+          <div className='bg-white rounded-lg shadow-sm p-6'>
+            <div className='flex justify-between items-center mb-4'>
+              <h2 className='text-lg font-semibold text-gray-900'>Tracks ({tracks.length})</h2>
+              <button
+                type='button'
+                onClick={addTrack}
+                disabled={uploading}
+                className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium'
+              >
+                + Add Track
+              </button>
+            </div>
+
+            <div className='space-y-3'>
+              {tracks.map((track, index) => (
+                <TrackUploadItem
+                  key={index}
+                  track={track}
+                  index={index}
+                  onUpdate={updateTrack}
+                  onDelete={deleteTrack}
+                  onMoveUp={moveTrackUp}
+                  onMoveDown={moveTrackDown}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < tracks.length - 1}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className='bg-white rounded-lg shadow-sm p-6'>
+            <button
+              disabled={uploading}
+              type='submit'
+              className='w-full py-3 px-6 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+            >
+              {uploading ? 'Uploading...' : 'Upload Album'}
+            </button>
+            {hasUnsavedChanges && !uploading && (
+              <p className='text-xs text-gray-500 mt-2 text-center'>Draft auto-saved</p>
+            )}
+          </div>
         </form>
       </div>
     </main>
+  );
+}
+
+export default function UploadPage() {
+  return (
+    <ToastProvider>
+      <UploadPageContent />
+    </ToastProvider>
   );
 }
