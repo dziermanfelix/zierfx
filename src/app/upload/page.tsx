@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { routes } from '@/utils/routes';
 import EnhancedFileInput from '@/components/EnhancedFileInput';
-import TrackUploadItem, { Track } from '@/components/TrackUploadItem';
-import ProgressBar from '@/components/ProgressBar';
+import TrackItem, { TrackItemData } from '@/components/TrackItem';
+import UploadProgressSection from '@/components/UploadProgressSection';
+import FormSection from '@/components/FormSection';
+import FormInput from '@/components/FormInput';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useUploadProgress } from '@/hooks/useUploadProgress';
 import { ToastProvider, useToast } from '@/components/ToastContainer';
@@ -14,7 +16,7 @@ interface UploadFormData {
   artist: string;
   album: string;
   releaseDate: string;
-  tracks: Track[];
+  tracks: TrackItemData[];
 }
 
 function UploadPageContent() {
@@ -25,7 +27,7 @@ function UploadPageContent() {
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [artwork, setArtwork] = useState<File | null>(null);
-  const [tracks, setTracks] = useState<Track[]>([{ name: '', file: null }]);
+  const [tracks, setTracks] = useState<TrackItemData[]>([{ name: '', file: null }]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const { fileProgresses, overallProgress, initializeFiles, updateFileProgress, reset } = useUploadProgress();
@@ -153,7 +155,7 @@ function UploadPageContent() {
         clearDraft();
         setHasUnsavedChanges(false);
         setTimeout(() => {
-          router.replace(routes.MUSIC);
+          router.replace(routes.HOME);
         }, 1500);
       } else {
         const error = await res.json();
@@ -171,7 +173,7 @@ function UploadPageContent() {
     setTracks([...tracks, { name: '', file: null }]);
   };
 
-  const updateTrack = (index: number, track: Track) => {
+  const updateTrack = (index: number, track: TrackItemData) => {
     const updated = [...tracks];
     updated[index] = track;
     setTracks(updated);
@@ -220,7 +222,7 @@ function UploadPageContent() {
     <main className='p-8 min-h-screen bg-gray-50'>
       <div className='max-w-4xl mx-auto space-y-6'>
         {/* Header */}
-        <div className='bg-white rounded-lg shadow-sm p-6'>
+        <FormSection>
           <div className='flex justify-between items-center'>
             <div>
               <h1 className='text-3xl font-bold text-gray-900'>New Release</h1>
@@ -237,79 +239,55 @@ function UploadPageContent() {
               </button>
             </div>
           </div>
-        </div>
+        </FormSection>
 
         {/* Upload Progress */}
         {uploading && (
-          <div className='bg-white rounded-lg shadow-sm p-6 space-y-4'>
-            <h2 className='text-lg font-semibold'>Upload Progress</h2>
-            <ProgressBar progress={overallProgress} label='Overall Progress' />
-            <div className='space-y-2'>
-              {fileProgresses.map((file) => (
-                <div key={file.name} className='flex items-center space-x-3'>
-                  <div className='flex-1'>
-                    <ProgressBar progress={file.progress} label={file.name} showPercentage={false} />
-                  </div>
-                  <span className='text-xs text-gray-500 w-20 text-right'>
-                    {file.status === 'complete' && 'Complete'}
-                    {file.status === 'uploading' && `${Math.round(file.progress)}%`}
-                    {file.status === 'pending' && 'Pending'}
-                    {file.status === 'error' && 'Error'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <UploadProgressSection
+            fileProgresses={fileProgresses}
+            overallProgress={overallProgress}
+            title='Upload Progress'
+          />
         )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className='space-y-6'>
           {/* Album Info */}
-          <div className='bg-white rounded-lg shadow-sm p-6 space-y-4'>
-            <h2 className='text-lg font-semibold text-gray-900'>Album Information</h2>
-
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>Artist Name *</label>
-              <input
+          <FormSection title='Album Information'>
+            <div className='space-y-4'>
+              <FormInput
+                label='Artist Name *'
                 type='text'
-                placeholder='Enter artist name'
                 value={artist}
-                onChange={(e) => setArtist(e.target.value)}
-                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                onChange={setArtist}
+                placeholder='Enter artist name'
                 required
                 disabled={uploading}
               />
-            </div>
 
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>Album Name *</label>
-              <input
+              <FormInput
+                label='Album Name *'
                 type='text'
-                placeholder='Enter album name'
                 value={album}
-                onChange={(e) => setAlbum(e.target.value)}
-                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                onChange={setAlbum}
+                placeholder='Enter album name'
                 required
                 disabled={uploading}
               />
-            </div>
 
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>Release Date *</label>
-              <input
+              <FormInput
+                label='Release Date *'
                 type='date'
                 value={releaseDate}
-                onChange={(e) => setReleaseDate(e.target.value)}
-                className='border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                onChange={setReleaseDate}
                 required
                 disabled={uploading}
               />
             </div>
-          </div>
+          </FormSection>
 
           {/* Artwork */}
-          <div className='bg-white rounded-lg shadow-sm p-6'>
-            <h2 className='text-lg font-semibold text-gray-900 mb-4'>Album Artwork *</h2>
+          <FormSection title='Album Artwork *'>
             <EnhancedFileInput
               accept='image/*'
               label='Upload Album Artwork'
@@ -318,12 +296,11 @@ function UploadPageContent() {
               onChange={(file) => setArtwork(file)}
               required
             />
-          </div>
+          </FormSection>
 
           {/* Tracks */}
-          <div className='bg-white rounded-lg shadow-sm p-6'>
-            <div className='flex justify-between items-center mb-4'>
-              <h2 className='text-lg font-semibold text-gray-900'>Tracks ({tracks.length})</h2>
+          <FormSection title={`Tracks (${tracks.length})`}>
+            <div className='flex justify-end mb-4'>
               <button
                 type='button'
                 onClick={addTrack}
@@ -336,7 +313,7 @@ function UploadPageContent() {
 
             <div className='space-y-3'>
               {tracks.map((track, index) => (
-                <TrackUploadItem
+                <TrackItem
                   key={index}
                   track={track}
                   index={index}
@@ -346,13 +323,15 @@ function UploadPageContent() {
                   onMoveDown={moveTrackDown}
                   canMoveUp={index > 0}
                   canMoveDown={index < tracks.length - 1}
+                  disabled={uploading}
+                  mode='create'
                 />
               ))}
             </div>
-          </div>
+          </FormSection>
 
           {/* Submit */}
-          <div className='bg-white rounded-lg shadow-sm p-6'>
+          <FormSection>
             <button
               disabled={uploading}
               type='submit'
@@ -363,7 +342,7 @@ function UploadPageContent() {
             {hasUnsavedChanges && !uploading && (
               <p className='text-xs text-gray-500 mt-2 text-center'>Draft auto-saved</p>
             )}
-          </div>
+          </FormSection>
         </form>
       </div>
     </main>
