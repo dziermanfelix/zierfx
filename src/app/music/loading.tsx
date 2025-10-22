@@ -8,7 +8,7 @@ export default function Loading() {
             <h1 className='text-5xl sm:text-6xl font-bold text-black mb-3'>Music</h1>
             <div className='h-1 bg-gradient-to-r from-black via-gray-700 to-gray-500 rounded-full'></div>
           </div>
-          <p className='mt-4 text-gray-700 text-lg font-medium'>All the ZF music in one place.</p>
+          <p className='mt-4 text-gray-700 text-lg font-medium'>Yeebob Records</p>
         </div>
 
         {/* Loading State */}
