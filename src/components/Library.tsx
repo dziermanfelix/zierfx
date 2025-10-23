@@ -112,24 +112,19 @@ export default function Library({ artists }: Props) {
 
         {/* Results Counter */}
         <div className='mt-4 text-sm text-gray-600'>
-          {search ? (
-            <span className='bg-gray-200 text-black px-3 py-1 rounded-full font-bold'>
-              {totalAlbums} {totalAlbums === 1 ? 'result' : 'results'} found
-            </span>
-          ) : (
-            <span className='text-gray-600 font-medium'>
-              {totalAlbums} {totalAlbums === 1 ? 'release' : 'releases'}
-            </span>
-          )}
+          <span className='text-gray-600 font-medium'>
+            {search
+              ? `${totalAlbums} ${totalAlbums === 1 ? 'release' : 'releases'} found`
+              : `${totalAlbums} ${totalAlbums === 1 ? 'release' : 'releases'}`}
+          </span>
         </div>
       </div>
 
       {/* Albums Grid */}
       {totalAlbums === 0 ? (
         <div className='text-center py-16'>
-          <div className='text-6xl mb-4'>🎵</div>
           <h3 className='text-2xl font-semibold text-gray-700 mb-2'>No results found</h3>
-          <p className='text-gray-500'>Try adjusting your search or filter</p>
+          <p className='text-gray-500'>Try something else</p>
         </div>
       ) : (
         <div
