@@ -85,7 +85,7 @@ export default function Library({ artists }: Props) {
               type='text'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder='Search your library...'
+              placeholder='Search music...'
               className='w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-black focus:ring-2 focus:ring-gray-300 transition-all outline-none text-gray-800 placeholder-gray-400'
             />
           </div>

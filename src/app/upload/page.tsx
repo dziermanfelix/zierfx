@@ -226,7 +226,7 @@ function UploadPageContent() {
           <div className='flex justify-between items-center'>
             <div>
               <h1 className='text-3xl font-bold text-gray-900'>New Release</h1>
-              <p className='text-sm text-gray-500 mt-1'>Upload your music to the library</p>
+              <p className='text-sm text-gray-500 mt-1'>Upload new music</p>
             </div>
             <div className='flex space-x-3'>
               {hasUnsavedChanges && !uploading && (

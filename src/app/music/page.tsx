@@ -30,7 +30,7 @@ export default async function LibraryPage() {
         <Suspense
           fallback={
             <div className='flex items-center justify-center h-64'>
-              <div className='animate-pulse text-gray-500 text-xl'>Loading your library...</div>
+              <div className='animate-pulse text-gray-500 text-xl'>Loading music...</div>
             </div>
           }
         >
