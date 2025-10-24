@@ -1,9 +1,36 @@
 export const dynamic = 'force-dynamic';
 
+import { Metadata } from 'next';
 import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
 import LiveDateCard from '@/components/LiveDateCard';
 import ConnectSection from '@/components/ConnectSection';
+
+export const metadata: Metadata = {
+  title: 'Live Shows & Concerts | Zierman Felix',
+  description:
+    'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos. Book tickets for live shows.',
+  keywords: [
+    'Zierman Felix live',
+    'concerts',
+    'tour dates',
+    'live shows',
+    'tickets',
+    'performances',
+    'live music',
+    'concert videos',
+  ],
+  openGraph: {
+    title: 'Live Shows & Concerts | Zierman Felix',
+    description:
+      'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos.',
+    type: 'website',
+    url: 'https://ziermanfelix.com/live',
+  },
+  alternates: {
+    canonical: 'https://ziermanfelix.com/live',
+  },
+};
 
 export default async function LivePage() {
   const liveDates = await db.liveDate.findMany({

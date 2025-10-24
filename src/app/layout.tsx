@@ -14,9 +14,71 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Zierman Felix',
-  description: 'Yeebob Records',
-  viewport: 'width=device-width, initial-scale=1',
+  title: {
+    default: 'Zierman Felix - Music & Live Shows | Yeebob Records',
+    template: '%s | Zierman Felix',
+  },
+  description:
+    'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
+  keywords: [
+    'Zierman Felix',
+    'Dustyn Zierman-Felix',
+    'Yeebob Records',
+    'music',
+    'live shows',
+    'concerts',
+    'original music',
+  ],
+  authors: [{ name: 'Zierman Felix' }],
+  creator: 'Zierman Felix',
+  publisher: 'Yeebob Records',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://ziermanfelix.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://ziermanfelix.com',
+    siteName: 'Zierman Felix',
+    title: 'Zierman Felix - Music & Live Shows | Yeebob Records',
+    description:
+      'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
+    images: [
+      {
+        url: '/Logo_BlackTransparent.png',
+        width: 1200,
+        height: 630,
+        alt: 'Zierman Felix - Yeebob Records',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Zierman Felix - Music & Live Shows | Yeebob Records',
+    description: 'Official website of Zierman Felix, featuring original music, live shows, and latest releases.',
+    images: ['/Logo_BlackTransparent.png'],
+    creator: '@ziermanfelix',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code', // Replace with actual verification code
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
