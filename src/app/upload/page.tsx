@@ -229,6 +229,9 @@ function UploadPageContent() {
               <p className='text-sm text-gray-500 mt-1'>Upload new music</p>
             </div>
             <div className='flex space-x-3'>
+              <a href='/admin' className='text-sm text-blue-600 hover:text-blue-800 underline'>
+                Admin Dashboard
+              </a>
               {hasUnsavedChanges && !uploading && (
                 <button onClick={clearForm} className='text-sm text-gray-600 hover:text-gray-800 underline'>
                   Clear Draft

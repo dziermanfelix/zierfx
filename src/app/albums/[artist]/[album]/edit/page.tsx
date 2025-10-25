@@ -78,6 +78,9 @@ function EditAlbumPageContent() {
               </p>
             </div>
             <div className='flex space-x-3'>
+              <a href='/admin' className='text-sm text-blue-600 hover:text-blue-800 underline'>
+                Admin Dashboard
+              </a>
               <LibraryLink />
               <button onClick={handleLogout} className='text-sm text-gray-600 hover:text-gray-800 underline'>
                 Logout
