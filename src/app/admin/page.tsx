@@ -19,12 +19,23 @@ interface DashboardStats {
   }>;
 }
 
+interface Artist {
+  id: number;
+  name: string;
+  slug: string;
+  albumCount: number;
+  trackCount: number;
+}
+
 function AdminDashboardContent() {
   const router = useRouter();
   const { showToast } = useToast();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [artistToDelete, setArtistToDelete] = useState<Artist | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -35,34 +46,82 @@ function AdminDashboardContent() {
     }
   };
 
-  useEffect(() => {
-    // Check authentication and load dashboard data
-    const loadDashboard = async () => {
-      try {
-        // Check if user is authenticated
-        const authResponse = await fetch('/api/auth/check');
-        if (!authResponse.ok) {
-          router.push('/login');
-          return;
-        }
+  const handleDeleteArtist = (artist: Artist) => {
+    setArtistToDelete(artist);
+    setShowDeleteConfirm(true);
+  };
 
-        const authData = await authResponse.json();
-        setUser(authData.user);
+  const confirmDeleteArtist = async () => {
+    if (!artistToDelete) return;
 
-        // Load dashboard stats
-        const statsResponse = await fetch('/api/admin/dashboard');
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData);
-        }
-      } catch (error) {
-        console.error('Error loading dashboard:', error);
-        showToast('Error loading dashboard data', 'error');
-      } finally {
-        setLoading(false);
+    try {
+      const response = await fetch('/api/admin/artists', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ artistId: artistToDelete.id }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        showToast(result.message, 'success');
+
+        // Refresh data
+        await loadDashboard();
+      } else {
+        const error = await response.json();
+        console.error('Delete artist error:', error);
+        showToast(error.error || 'Failed to delete artist', 'error');
       }
-    };
+    } catch (error) {
+      console.error('Delete artist error:', error);
+      showToast('Error deleting artist', 'error');
+    } finally {
+      setShowDeleteConfirm(false);
+      setArtistToDelete(null);
+    }
+  };
 
+  const cancelDeleteArtist = () => {
+    setShowDeleteConfirm(false);
+    setArtistToDelete(null);
+  };
+
+  const loadDashboard = async () => {
+    try {
+      // Check if user is authenticated
+      const authResponse = await fetch('/api/auth/check');
+      if (!authResponse.ok) {
+        router.push('/login');
+        return;
+      }
+
+      const authData = await authResponse.json();
+      setUser(authData.user);
+
+      // Load dashboard stats
+      const statsResponse = await fetch('/api/admin/dashboard');
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData);
+      }
+
+      // Load artists
+      const artistsResponse = await fetch('/api/admin/artists');
+      if (artistsResponse.ok) {
+        const artistsData = await artistsResponse.json();
+        setArtists(artistsData);
+      }
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      showToast('Error loading dashboard data', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadDashboard();
   }, [router, showToast]);
 
@@ -282,6 +341,84 @@ function AdminDashboardContent() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Artist Management */}
+        {artists.length > 0 && (
+          <div className='bg-white rounded-lg shadow-sm p-6'>
+            <h2 className='text-xl font-semibold text-gray-900 mb-4'>Artist Management</h2>
+            <div className='overflow-x-auto'>
+              <table className='min-w-full divide-y divide-gray-200'>
+                <thead className='bg-gray-50'>
+                  <tr>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Artist
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Albums
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Tracks
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='bg-white divide-y divide-gray-200'>
+                  {artists.map((artist) => (
+                    <tr key={artist.id} className='hover:bg-gray-50'>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{artist.name}</td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{artist.albumCount}</td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{artist.trackCount}</td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                        <button
+                          onClick={() => handleDeleteArtist(artist)}
+                          className='text-red-600 hover:text-red-900 font-medium'
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteConfirm && artistToDelete && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+            <div className='bg-white rounded-lg p-6 max-w-md w-full mx-4'>
+              <h3 className='text-lg font-semibold text-gray-900 mb-4'>Delete Artist</h3>
+              <p className='text-gray-600 mb-6'>
+                Are you sure you want to delete <strong>{artistToDelete.name}</strong>? This will permanently delete:
+              </p>
+              <ul className='text-sm text-gray-600 mb-6 ml-4'>
+                <li>• {artistToDelete.albumCount} album(s)</li>
+                <li>• {artistToDelete.trackCount} track(s)</li>
+                <li>• All associated files and artwork</li>
+              </ul>
+              <p className='text-red-600 text-sm mb-6'>
+                <strong>This action cannot be undone.</strong>
+              </p>
+              <div className='flex gap-3 justify-end'>
+                <button
+                  onClick={cancelDeleteArtist}
+                  className='px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50'
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteArtist}
+                  className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700'
+                >
+                  Delete Artist
+                </button>
+              </div>
             </div>
           </div>
         )}
