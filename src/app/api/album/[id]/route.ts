@@ -18,6 +18,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     const id = formData.get(`tracks[${i}][id]`);
     const name = formData.get(`tracks[${i}][name]`)?.toString();
     const number = Number(formData.get(`tracks[${i}][number]`));
+    const downloadable = formData.get(`tracks[${i}][downloadable]`)?.toString() === 'true';
     const file = formData.get(`tracks[${i}][file]`);
 
     if (!id || !name) break;
@@ -44,6 +45,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       name: name.toString(),
       audioUrl,
       length,
+      downloadable,
     });
   }
 
@@ -76,6 +78,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       where: { id: track.id },
       data: {
         name: track.name,
+        downloadable: track.downloadable,
         ...(track.audioUrl && { audioUrl: track.audioUrl }),
         ...(track.length && { length: track.length }),
       },

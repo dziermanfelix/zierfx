@@ -8,35 +8,36 @@ datasource db {
 }
 
 model Artist {
-  id      Int     @id @default(autoincrement())
-  slug    String
-  name    String  @unique
-  albums  Album[]
+  id     Int     @id @default(autoincrement())
+  slug   String
+  name   String  @unique
+  albums Album[]
 }
 
 model Album {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   slug        String
   name        String
   releaseDate DateTime
   artworkUrl  String?
-  artist      Artist    @relation(fields: [artistId], references: [id], onDelete: Cascade)
   artistId    Int
+  artist      Artist   @relation(fields: [artistId], references: [id], onDelete: Cascade)
   tracks      Track[]
 }
 
 model Track {
-  id        Int    @id @default(autoincrement())
-  number    Int
-  name      String
-  audioUrl  String?
-  length    Int?
-  album     Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
-  albumId   Int
+  id           Int     @id @default(autoincrement())
+  number       Int
+  name         String
+  audioUrl     String?
+  length       Int?
+  downloadable Boolean @default(true)
+  albumId      Int
+  album        Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }
 
 model LiveDate {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id(map: "TourDate_pkey") @default(autoincrement())
   date        DateTime
   venue       String
   city        String
@@ -51,11 +52,10 @@ model LiveDate {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  password  String   // This will store hashed passwords
+  password  String
   username  String   @unique
   name      String?
-  role      String   @default("user") // "admin" or "user"
+  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-

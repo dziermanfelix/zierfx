@@ -20,19 +20,19 @@ export async function POST(req: NextRequest) {
     artworkUrl = await saveFile(artwork, makeAlbumArtworkFileName(artwork.name, artistString, albumString));
   }
 
-  type IncomingTrack = { name: string; file: File | null };
+  type IncomingTrack = { name: string; file: File | null; downloadable: boolean };
 
   const trackMap = new Map<number, IncomingTrack>();
 
   for (const [key, value] of formData.entries()) {
-    const match = key.match(/^tracks\[(\d+)]\[(name|file)]$/);
+    const match = key.match(/^tracks\[(\d+)]\[(name|file|downloadable)]$/);
     if (!match) continue;
 
     const index = parseInt(match[1]);
     const field = match[2];
 
     if (!trackMap.has(index)) {
-      trackMap.set(index, { name: '', file: null });
+      trackMap.set(index, { name: '', file: null, downloadable: true });
     }
 
     const track = trackMap.get(index)!;
@@ -41,13 +41,15 @@ export async function POST(req: NextRequest) {
       track.name = value;
     } else if (field === 'file' && value instanceof File) {
       track.file = value;
+    } else if (field === 'downloadable' && typeof value === 'string') {
+      track.downloadable = value === 'true';
     }
   }
 
   const tracksToCreate = await Promise.all(
     Array.from(trackMap.entries())
       .sort(([a], [b]) => a - b)
-      .map(async ([i, { name, file }]) => {
+      .map(async ([i, { name, file, downloadable }]) => {
         let audioUrl: string | null = null;
         let length: number | null = null;
 
@@ -61,6 +63,7 @@ export async function POST(req: NextRequest) {
           number: i + 1,
           audioUrl,
           length,
+          downloadable,
         };
       })
   );

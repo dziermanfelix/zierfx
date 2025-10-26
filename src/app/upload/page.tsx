@@ -139,6 +139,7 @@ function UploadPageContent() {
       for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         formData.append(`tracks[${i}][name]`, track.name);
+        formData.append(`tracks[${i}][downloadable]`, String(track.downloadable !== false));
         if (track.file) {
           formData.append(`tracks[${i}][file]`, track.file);
           await simulateUploadProgress(track.file.name, track.file);

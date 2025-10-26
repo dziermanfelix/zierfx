@@ -9,6 +9,7 @@ export interface TrackItemData {
   number?: number;
   id?: number | bigint;
   audioUrl?: string | null;
+  downloadable?: boolean;
 }
 
 interface TrackItemProps {
@@ -131,6 +132,22 @@ export default function TrackItem({
             }}
             required={mode === 'create'}
           />
+
+          <div className='flex items-center space-x-2'>
+            <input
+              type='checkbox'
+              id={`downloadable-${index}`}
+              checked={track.downloadable !== false}
+              onChange={(e) => {
+                onUpdate(index, { ...track, downloadable: e.target.checked });
+              }}
+              className='rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+              disabled={disabled}
+            />
+            <label htmlFor={`downloadable-${index}`} className='text-sm text-gray-700'>
+              Allow downloads
+            </label>
+          </div>
 
           {mode === 'edit' && !hasNewFile && hasExistingFile && (
             <p className='text-xs text-gray-500'>Current audio will be kept if no new file is uploaded</p>

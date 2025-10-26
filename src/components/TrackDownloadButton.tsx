@@ -33,6 +33,11 @@ export default function TrackDownloadButton({ track }: Props) {
     }
   };
 
+  // Don't show download button if track is not downloadable
+  if (!track.downloadable) {
+    return null;
+  }
+
   return (
     <button
       disabled={downloading}

@@ -24,6 +24,7 @@ type EditableTrack = TrackItemData & {
   id: number | bigint;
   number: number;
   audioUrl: string | null;
+  downloadable: boolean;
 };
 
 export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInfoProps) {
@@ -40,6 +41,7 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
       number: track.number,
       audioUrl: track.audioUrl,
       file: null,
+      downloadable: track.downloadable,
     }))
   );
 
@@ -113,6 +115,7 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
         formData.append(`tracks[${i}][id]`, track.id.toString());
         formData.append(`tracks[${i}][name]`, track.name);
         formData.append(`tracks[${i}][number]`, track.number.toString());
+        formData.append(`tracks[${i}][downloadable]`, String(track.downloadable));
         if (track.file) {
           formData.append(`tracks[${i}][file]`, track.file);
           await simulateUploadProgress(track.file.name);
