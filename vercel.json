@@ -4,5 +4,12 @@
     "env": {
       "PRISMA_GENERATE_SKIP_AUTOINSTALL": "1"
     }
+  },
+  "functions": {
+    "src/app/api/upload/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024,
+      "maxRequestBodySize": "104857600"
+    }
   }
 }

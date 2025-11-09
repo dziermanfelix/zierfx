@@ -11,12 +11,16 @@ type Props = {
   artists: ArtistWithAlbumAndTracks[];
 };
 
+type SortOption = 'newest' | 'oldest' | 'album-az' | 'album-za' | 'artist-az' | 'artist-za';
+
 export default function Library({ artists }: Props) {
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get('search') ?? '';
   const initialFilter = (searchParams.get('filter') as 'artist' | 'album' | 'track') ?? 'artist';
+  const initialSort = (searchParams.get('sort') as SortOption) ?? 'newest';
   const [search, setSearch] = useState(initialSearch);
   const [filterBy, setFilterBy] = useState<'artist' | 'album' | 'track'>(initialFilter);
+  const [sortBy, setSortBy] = useState<SortOption>(initialSort);
   const isMobile = useIsMobile();
 
   const router = useRouter();
@@ -25,42 +29,76 @@ export default function Library({ artists }: Props) {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (filterBy) params.set('filter', filterBy);
+    if (sortBy) params.set('sort', sortBy);
 
     router.replace(`/music?${params.toString()}`);
-  }, [search, filterBy]);
+  }, [search, filterBy, sortBy]);
 
-  const filteredArtists = useMemo(() => {
-    if (!search.trim()) return artists;
+  const filteredAndSortedArtists = useMemo(() => {
+    // First filter by search query
+    let result = search.trim()
+      ? artists.flatMap((artist) => {
+          const artistMatch = artist.name.toLowerCase().includes(search.toLowerCase());
 
-    const query = search.toLowerCase();
+          const filteredAlbums = artist.albums
+            .map((album) => {
+              const albumMatch = album.name.toLowerCase().includes(search.toLowerCase());
+              const filteredTracks = album.tracks.filter((track) =>
+                track.name.toLowerCase().includes(search.toLowerCase())
+              );
 
-    return artists.flatMap((artist) => {
-      const artistMatch = artist.name.toLowerCase().includes(query);
+              if (filterBy === 'track' && filteredTracks.length > 0) {
+                return { ...album, tracks: filteredTracks };
+              }
 
-      const filteredAlbums = artist.albums
-        .map((album) => {
-          const albumMatch = album.name.toLowerCase().includes(query);
-          const filteredTracks = album.tracks.filter((track) => track.name.toLowerCase().includes(query));
+              if (filterBy === 'album' && albumMatch) {
+                return album;
+              }
 
-          if (filterBy === 'track' && filteredTracks.length > 0) {
-            return { ...album, tracks: filteredTracks };
-          }
+              return null;
+            })
+            .filter((a): a is Album & { tracks: Track[] } => a !== null);
 
-          if (filterBy === 'album' && albumMatch) {
-            return album;
-          }
-
-          return null;
+          if (filterBy === 'artist' && artistMatch) return [artist];
+          if (filteredAlbums.length > 0) return [{ ...artist, albums: filteredAlbums }];
+          return [];
         })
-        .filter((a): a is Album & { tracks: Track[] } => a !== null);
+      : artists;
 
-      if (filterBy === 'artist' && artistMatch) return [artist];
-      if (filteredAlbums.length > 0) return [{ ...artist, albums: filteredAlbums }];
-      return [];
-    });
-  }, [search, filterBy, artists]);
+    // Then sort the albums
+    const sortedResult = result.map((artist) => ({
+      ...artist,
+      albums: [...artist.albums].sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+          case 'oldest':
+            return new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime();
+          case 'album-az':
+            return a.name.localeCompare(b.name);
+          case 'album-za':
+            return b.name.localeCompare(a.name);
+          case 'artist-az':
+            return artist.name.localeCompare(artist.name);
+          case 'artist-za':
+            return artist.name.localeCompare(artist.name);
+          default:
+            return 0;
+        }
+      }),
+    }));
 
-  const totalAlbums = filteredArtists.reduce((acc, artist) => acc + artist.albums.length, 0);
+    // Sort artists if sorting by artist name
+    if (sortBy === 'artist-az' || sortBy === 'artist-za') {
+      return sortedResult.sort((a, b) => {
+        return sortBy === 'artist-az' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+      });
+    }
+
+    return sortedResult;
+  }, [search, filterBy, sortBy, artists]);
+
+  const totalAlbums = filteredAndSortedArtists.reduce((acc, artist) => acc + artist.albums.length, 0);
 
   return (
     <div className='space-y-8'>
@@ -108,6 +146,28 @@ export default function Library({ artists }: Props) {
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
             </svg>
           </div>
+          <div className='relative'>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className='appearance-none w-full sm:w-auto px-6 py-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-black focus:ring-2 focus:ring-gray-300 transition-all outline-none text-gray-800 font-medium cursor-pointer bg-white'
+            >
+              <option value='newest'>Recent</option>
+              <option value='oldest'>Old</option>
+              <option value='album-az'>Album A-Z</option>
+              <option value='album-za'>Album Z-A</option>
+              <option value='artist-az'>Artist A-Z</option>
+              <option value='artist-za'>Artist Z-A</option>
+            </select>
+            <svg
+              className='absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
+            </svg>
+          </div>
         </div>
 
         {/* Results Counter */}
@@ -132,7 +192,7 @@ export default function Library({ artists }: Props) {
             isMobile ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
           }`}
         >
-          {filteredArtists.map((artist) =>
+          {filteredAndSortedArtists.map((artist) =>
             artist.albums.map((album) => (
               <AlbumCard key={album.id} album={album} artist={artist} search={search} filterBy={filterBy} />
             ))

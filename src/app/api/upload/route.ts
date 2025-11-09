@@ -4,6 +4,9 @@ import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName } from '@/u
 import { saveFile } from '@/lib/storage';
 import { slugify } from '@/utils/slugify';
 
+// Note: Large file upload limits are configured in vercel.json and next.config.ts
+// Vercel Pro/Enterprise plans support up to 100MB request bodies
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
 
