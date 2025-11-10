@@ -39,8 +39,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   });
 
-  // Get all live dates
-  const liveDates = await db.liveDate.findMany();
+  // Get all shows
+  const shows = await db.show.findMany();
 
   // Generate album pages
   const albumPages = albums.map((album) => ({
@@ -50,13 +50,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Generate live date pages (if you have individual pages for them)
-  const liveDatePages = liveDates.map((liveDate) => ({
-    url: `${baseUrl}/live/${liveDate.id}`, // Adjust this URL structure as needed
-    lastModified: liveDate.updatedAt || liveDate.createdAt,
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
+  // Update the /live page's lastModified based on the most recent show
+  if (shows.length > 0) {
+    const livePageIndex = staticPages.findIndex((page) => page.url === `${baseUrl}/live`);
+    const mostRecentShow = shows.reduce(
+      (latest, show) => (show.updatedAt > latest ? show.updatedAt : latest),
+      shows[0].updatedAt
+    );
+    if (livePageIndex !== -1) {
+      staticPages[livePageIndex].lastModified = mostRecentShow;
+    }
+  }
 
-  return [...staticPages, ...albumPages, ...liveDatePages];
+  return [...staticPages, ...albumPages];
 }
