@@ -36,8 +36,8 @@ model Track {
   album        Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }
 
-model LiveDate {
-  id          Int      @id(map: "TourDate_pkey") @default(autoincrement())
+model Show {
+  id          Int      @id @default(autoincrement())
   date        DateTime
   venue       String
   city        String

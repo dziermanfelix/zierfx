@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { Metadata } from 'next';
 import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
-import LiveDateCard from '@/components/LiveDateCard';
+import ShowCard from '@/components/ShowCard';
 import ConnectSection from '@/components/ConnectSection';
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LivePage() {
-  const liveDates = await db.liveDate.findMany({
+  const shows = await db.show.findMany({
     where: {
       date: {
         gte: new Date(), // Only show upcoming dates
@@ -53,7 +53,7 @@ export default async function LivePage() {
         </div>
 
         <Suspense fallback={<div>Loading live shows...</div>}>
-          {liveDates.length === 0 ? (
+          {shows.length === 0 ? (
             <div className='text-center py-12'>
               <p className='text-xl text-gray-500 dark:text-gray-400'>
                 No upcoming live shows scheduled at the moment.
@@ -62,8 +62,8 @@ export default async function LivePage() {
             </div>
           ) : (
             <div className='space-y-4'>
-              {liveDates.map((liveDate) => (
-                <LiveDateCard key={liveDate.id} liveDate={liveDate} />
+              {shows.map((show) => (
+                <ShowCard key={show.id} show={show} />
               ))}
             </div>
           )}

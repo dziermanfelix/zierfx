@@ -274,7 +274,7 @@ function AdminDashboardContent() {
             </a>
 
             <a
-              href='/live'
+              href='/admin/shows'
               className='flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors'
             >
               <div className='p-2 bg-purple-100 rounded-lg mr-4'>
@@ -288,8 +288,8 @@ function AdminDashboardContent() {
                 </svg>
               </div>
               <div>
-                <h3 className='font-medium text-gray-900'>Manage Live Dates</h3>
-                <p className='text-sm text-gray-600'>Add and edit live performance dates</p>
+                <h3 className='font-medium text-gray-900'>Manage Shows</h3>
+                <p className='text-sm text-gray-600'>Add and manage live performance dates</p>
               </div>
             </a>
           </div>
