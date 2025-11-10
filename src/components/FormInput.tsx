@@ -2,7 +2,7 @@
 
 interface FormInputProps {
   label: string;
-  type?: 'text' | 'date' | 'email' | 'number';
+  type?: 'text' | 'date' | 'email' | 'number' | 'time';
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
