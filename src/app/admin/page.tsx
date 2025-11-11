@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { routes } from '@/utils/routes';
 import { ToastProvider, useToast } from '@/components/ToastContainer';
-import LibraryLink from '@/components/LIbraryLink';
 
 interface DashboardStats {
   totalAlbums: number;
@@ -156,7 +155,6 @@ function AdminDashboardContent() {
               <p className='text-gray-600 mt-2'>Welcome back, {user.username}</p>
             </div>
             <div className='flex gap-4'>
-              <LibraryLink />
               <button
                 onClick={handleLogout}
                 className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors'

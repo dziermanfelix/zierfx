@@ -17,7 +17,7 @@ export default function LibraryLink() {
       className='inline-flex items-center space-x-2 px-4 py-2 bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-md hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-black group'
     >
       <ArrowLeft className='w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200' />
-      <span className='font-medium'>Back to Music</span>
+      <span className='font-medium'>Music</span>
     </Link>
   );
 }
