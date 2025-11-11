@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     // Ensure user is admin
     await requireAdmin();
     const body = await request.json();
-    const { date, time, venue, city, state, country, ticketUrl, description } = body;
+    const { date, time, endTime, venue, address, city, state, zipCode, country, ticketUrl, isFree, mapsUrl, description } = body;
 
     // Validate required fields
     if (!date || !time || !venue || !city || !country) {
@@ -21,15 +21,27 @@ export async function POST(request: NextRequest) {
     const dateTimeString = `${date}T${time}`;
     const showDate = new Date(dateTimeString);
 
+    // Handle end time if provided
+    let showEndTime = null;
+    if (endTime) {
+      const endTimeString = `${date}T${endTime}`;
+      showEndTime = new Date(endTimeString);
+    }
+
     // Create the show
     const show = await db.show.create({
       data: {
         date: showDate,
+        endTime: showEndTime,
         venue,
+        address: address || null,
         city,
         state: state || null,
+        zipCode: zipCode || null,
         country,
         ticketUrl: ticketUrl || null,
+        isFree: isFree || false,
+        mapsUrl: mapsUrl || null,
         description: description || null,
       },
     });

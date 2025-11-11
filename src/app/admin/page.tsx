@@ -273,7 +273,7 @@ function AdminDashboardContent() {
             </a>
 
             <a
-              href='/admin/shows'
+              href='/admin/live'
               className='flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors'
             >
               <div className='p-2 bg-purple-100 rounded-lg mr-4'>

@@ -11,11 +11,14 @@ import { Show } from '@prisma/client';
 interface ShowFormData {
   date: string;
   time: string;
+  endTime: string;
   venue: string;
   city: string;
   state: string;
   country: string;
   ticketUrl: string;
+  isFree: boolean;
+  mapsUrl: string;
   description: string;
 }
 
@@ -29,11 +32,14 @@ function AdminShowsContent() {
   const [formData, setFormData] = useState<ShowFormData>({
     date: '',
     time: '20:00',
+    endTime: '',
     venue: '',
     city: '',
     state: '',
     country: 'USA',
     ticketUrl: '',
+    isFree: false,
+    mapsUrl: '',
     description: '',
   });
 
@@ -84,11 +90,14 @@ function AdminShowsContent() {
         setFormData({
           date: '',
           time: '20:00',
+          endTime: '',
           venue: '',
           city: '',
           state: '',
           country: 'USA',
           ticketUrl: '',
+          isFree: false,
+          mapsUrl: '',
           description: '',
         });
         setShowForm(false);
@@ -209,11 +218,19 @@ function AdminShowsContent() {
                 />
 
                 <FormInput
-                  label='Time *'
+                  label='Start Time *'
                   type='time'
                   value={formData.time}
                   onChange={(val) => setFormData({ ...formData, time: val })}
                   required
+                  disabled={submitting}
+                />
+
+                <FormInput
+                  label='End Time'
+                  type='time'
+                  value={formData.endTime}
+                  onChange={(val) => setFormData({ ...formData, endTime: val })}
                   disabled={submitting}
                 />
 
@@ -258,15 +275,32 @@ function AdminShowsContent() {
               </div>
 
               <div className='mt-4'>
-                <FormInput
-                  label='Ticket URL'
-                  type='url'
-                  value={formData.ticketUrl}
-                  onChange={(val) => setFormData({ ...formData, ticketUrl: val })}
-                  placeholder='https://tickets.com/event/... (optional)'
-                  disabled={submitting}
-                />
+                <label className='flex items-center gap-2 cursor-pointer'>
+                  <input
+                    type='checkbox'
+                    checked={formData.isFree}
+                    onChange={(e) => setFormData({ ...formData, isFree: e.target.checked })}
+                    disabled={submitting}
+                    className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+                  />
+                  <span className='text-sm font-medium text-gray-700'>
+                    Free Entry (no ticket required)
+                  </span>
+                </label>
               </div>
+
+              {!formData.isFree && (
+                <div className='mt-4'>
+                  <FormInput
+                    label='Ticket URL'
+                    type='url'
+                    value={formData.ticketUrl}
+                    onChange={(val) => setFormData({ ...formData, ticketUrl: val })}
+                    placeholder='https://tickets.com/event/... (optional)'
+                    disabled={submitting}
+                  />
+                </div>
+              )}
 
               <div className='mt-4'>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>

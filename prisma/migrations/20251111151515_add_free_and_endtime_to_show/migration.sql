@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Show" ADD COLUMN "endTime" TIMESTAMP(3),
+ADD COLUMN "isFree" BOOLEAN NOT NULL DEFAULT false;
+
