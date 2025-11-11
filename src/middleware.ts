@@ -24,5 +24,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/albums/(.*)/edit', '/upload', '/admin'],
+  matcher: ['/albums/(.*)/edit', '/admin'],
 };
