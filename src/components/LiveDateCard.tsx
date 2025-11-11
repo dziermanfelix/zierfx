@@ -1,9 +1,13 @@
 'use client';
 
-import { Show } from '@prisma/client';
+import { Show, Venue } from '@prisma/client';
+
+type ShowWithVenue = Show & {
+  venue: Venue;
+};
 
 interface ShowCardProps {
-  show: Show;
+  show: ShowWithVenue;
 }
 
 export default function ShowCard({ show }: ShowCardProps) {
@@ -32,11 +36,11 @@ export default function ShowCard({ show }: ShowCardProps) {
               </div>
             </div>
             <div className='flex-1'>
-              <h3 className='text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100'>{show.venue}</h3>
+              <h3 className='text-xl font-semibold mb-1 text-gray-900 dark:text-gray-100'>{show.venue.name}</h3>
               <p className='text-gray-600 dark:text-gray-400'>
-                {show.city}
-                {show.state && `, ${show.state}`}
-                {show.country && ` • ${show.country}`}
+                {show.venue.city}
+                {show.venue.state && `, ${show.venue.state}`}
+                {show.venue.country && ` • ${show.venue.country}`}
               </p>
               {show.description && (
                 <p className='text-sm text-gray-500 dark:text-gray-500 mt-2'>{show.description}</p>

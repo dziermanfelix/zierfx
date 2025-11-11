@@ -6,19 +6,29 @@ import { routes } from '@/utils/routes';
 import { ToastProvider, useToast } from '@/components/ToastContainer';
 import FormSection from '@/components/FormSection';
 import FormInput from '@/components/FormInput';
-import { Show } from '@prisma/client';
+import { Show, Venue } from '@prisma/client';
+
+type ShowWithVenue = Show & {
+  venue: Venue;
+};
+
+interface VenueOption extends Venue {
+  _count: {
+    shows: number;
+  };
+}
 
 interface ShowFormData {
   date: string;
   time: string;
   endTime: string;
+  venueId: string;
   venue: string;
   city: string;
   state: string;
   country: string;
   ticketUrl: string;
   isFree: boolean;
-  mapsUrl: string;
   description: string;
 }
 
@@ -27,19 +37,21 @@ function AdminShowsContent() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [shows, setShows] = useState<Show[]>([]);
+  const [shows, setShows] = useState<ShowWithVenue[]>([]);
+  const [venues, setVenues] = useState<VenueOption[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [useExistingVenue, setUseExistingVenue] = useState(false);
   const [formData, setFormData] = useState<ShowFormData>({
     date: '',
     time: '20:00',
     endTime: '',
+    venueId: '',
     venue: '',
     city: '',
     state: '',
     country: 'USA',
     ticketUrl: '',
     isFree: false,
-    mapsUrl: '',
     description: '',
   });
 
@@ -64,25 +76,89 @@ function AdminShowsContent() {
     }
   };
 
+  const loadVenues = async () => {
+    try {
+      const res = await fetch('/api/admin/venues');
+      if (res.ok) {
+        const data = await res.json();
+        setVenues(data);
+        // Default to using existing venue if venues exist
+        if (data.length > 0) {
+          setUseExistingVenue(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading venues:', error);
+    }
+  };
+
   useEffect(() => {
     loadShows();
+    loadVenues();
   }, []);
+
+  const handleVenueSelect = (venueId: string) => {
+    const selectedVenue = venues.find((v) => v.id === parseInt(venueId));
+    if (selectedVenue) {
+      setFormData({
+        ...formData,
+        venueId,
+        venue: selectedVenue.name,
+        city: selectedVenue.city,
+        state: selectedVenue.state || '',
+        country: selectedVenue.country,
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.date || !formData.time || !formData.venue || !formData.city || !formData.country) {
-      showToast('Please fill in all required fields', 'error');
+    if (!formData.date || !formData.time) {
+      showToast('Please fill in date and time', 'error');
+      return;
+    }
+
+    if (useExistingVenue && !formData.venueId) {
+      showToast('Please select a venue', 'error');
+      return;
+    }
+
+    if (!useExistingVenue && (!formData.venue || !formData.city || !formData.country)) {
+      showToast('Please fill in venue name, city, and country', 'error');
       return;
     }
 
     setSubmitting(true);
 
     try {
+      const payload = useExistingVenue
+        ? {
+            date: formData.date,
+            time: formData.time,
+            endTime: formData.endTime,
+            venueId: parseInt(formData.venueId),
+            ticketUrl: formData.ticketUrl,
+            isFree: formData.isFree,
+            description: formData.description,
+          }
+        : {
+            date: formData.date,
+            time: formData.time,
+            endTime: formData.endTime,
+            venue: formData.venue,
+            city: formData.city,
+            state: formData.state,
+            country: formData.country,
+            ticketUrl: formData.ticketUrl,
+            isFree: formData.isFree,
+            description: formData.description,
+          };
+
       const res = await fetch('/api/admin/shows', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -91,17 +167,19 @@ function AdminShowsContent() {
           date: '',
           time: '20:00',
           endTime: '',
+          venueId: '',
           venue: '',
           city: '',
           state: '',
           country: 'USA',
           ticketUrl: '',
           isFree: false,
-          mapsUrl: '',
           description: '',
         });
         setShowForm(false);
+        setUseExistingVenue(false);
         await loadShows();
+        await loadVenues(); // Refresh venues list in case a new one was added
       } else {
         const error = await res.json();
         showToast(error.error || 'Failed to add show', 'error');
@@ -114,8 +192,8 @@ function AdminShowsContent() {
     }
   };
 
-  const handleDelete = async (showId: number, venue: string) => {
-    if (!confirm(`Are you sure you want to delete the show at ${venue}? This cannot be undone.`)) {
+  const handleDelete = async (showId: number, venueName: string) => {
+    if (!confirm(`Are you sure you want to delete the show at ${venueName}? This cannot be undone.`)) {
       return;
     }
 
@@ -233,64 +311,143 @@ function AdminShowsContent() {
                   onChange={(val) => setFormData({ ...formData, endTime: val })}
                   disabled={submitting}
                 />
-
-                <FormInput
-                  label='Venue *'
-                  type='text'
-                  value={formData.venue}
-                  onChange={(val) => setFormData({ ...formData, venue: val })}
-                  placeholder='The Fillmore'
-                  required
-                  disabled={submitting}
-                />
-
-                <FormInput
-                  label='City *'
-                  type='text'
-                  value={formData.city}
-                  onChange={(val) => setFormData({ ...formData, city: val })}
-                  placeholder='San Francisco'
-                  required
-                  disabled={submitting}
-                />
-
-                <FormInput
-                  label='State/Province'
-                  type='text'
-                  value={formData.state}
-                  onChange={(val) => setFormData({ ...formData, state: val })}
-                  placeholder='CA (optional)'
-                  disabled={submitting}
-                />
-
-                <FormInput
-                  label='Country *'
-                  type='text'
-                  value={formData.country}
-                  onChange={(val) => setFormData({ ...formData, country: val })}
-                  placeholder='USA'
-                  required
-                  disabled={submitting}
-                />
               </div>
+            </FormSection>
 
-              <div className='mt-4'>
-                <label className='flex items-center gap-2 cursor-pointer'>
-                  <input
-                    type='checkbox'
-                    checked={formData.isFree}
-                    onChange={(e) => setFormData({ ...formData, isFree: e.target.checked })}
+            <FormSection title='Venue Information'>
+              {useExistingVenue ? (
+                <div className='space-y-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>Select Venue *</label>
+                    <select
+                      value={formData.venueId}
+                      onChange={(e) => handleVenueSelect(e.target.value)}
+                      disabled={submitting}
+                      required
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed'
+                    >
+                      <option value=''>-- Select a Venue --</option>
+                      {venues.map((venue) => (
+                        <option key={venue.id} value={venue.id}>
+                          {venue.name} - {venue.city}, {venue.country}
+                          {venue._count.shows > 0 && ` (${venue._count.shows} show${venue._count.shows > 1 ? 's' : ''})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {formData.venueId && (
+                    <div className='p-4 bg-gray-50 rounded-lg border border-gray-200'>
+                      <h4 className='font-semibold text-gray-700 mb-2'>Venue Details:</h4>
+                      <div className='text-sm text-gray-600 space-y-1'>
+                        <p>
+                          <strong>Name:</strong> {formData.venue}
+                        </p>
+                        <p>
+                          <strong>Location:</strong> {formData.city}
+                          {formData.state && `, ${formData.state}`}, {formData.country}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {venues.length > 0 && (
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setUseExistingVenue(false);
+                        setFormData({ ...formData, venueId: '' });
+                      }}
+                      disabled={submitting}
+                      className='text-sm text-blue-600 hover:text-blue-800 font-medium underline'
+                    >
+                      + Add a new venue instead
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <FormInput
+                    label='Venue Name *'
+                    type='text'
+                    value={formData.venue}
+                    onChange={(val) => setFormData({ ...formData, venue: val })}
+                    placeholder='The Fillmore'
+                    required={!useExistingVenue}
                     disabled={submitting}
-                    className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
                   />
-                  <span className='text-sm font-medium text-gray-700'>
-                    Free Entry (no ticket required)
-                  </span>
-                </label>
-              </div>
 
-              {!formData.isFree && (
-                <div className='mt-4'>
+                  <FormInput
+                    label='City *'
+                    type='text'
+                    value={formData.city}
+                    onChange={(val) => setFormData({ ...formData, city: val })}
+                    placeholder='San Francisco'
+                    required={!useExistingVenue}
+                    disabled={submitting}
+                  />
+
+                  <FormInput
+                    label='State/Province'
+                    type='text'
+                    value={formData.state}
+                    onChange={(val) => setFormData({ ...formData, state: val })}
+                    placeholder='CA (optional)'
+                    disabled={submitting}
+                  />
+
+                  <FormInput
+                    label='Country *'
+                    type='text'
+                    value={formData.country}
+                    onChange={(val) => setFormData({ ...formData, country: val })}
+                    placeholder='USA'
+                    required={!useExistingVenue}
+                    disabled={submitting}
+                  />
+
+                  {venues.length > 0 && (
+                    <div className='pt-4 border-t'>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          setUseExistingVenue(true);
+                          setFormData({
+                            ...formData,
+                            venue: '',
+                            city: '',
+                            state: '',
+                            country: 'USA',
+                          });
+                        }}
+                        disabled={submitting}
+                        className='text-sm text-blue-600 hover:text-blue-800 font-medium underline'
+                      >
+                        ← Select from existing venues
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </FormSection>
+
+            <FormSection title='Ticketing & Additional Info'>
+              <div className='space-y-4'>
+
+                <div>
+                  <label className='flex items-center gap-2 cursor-pointer'>
+                    <input
+                      type='checkbox'
+                      checked={formData.isFree}
+                      onChange={(e) => setFormData({ ...formData, isFree: e.target.checked })}
+                      disabled={submitting}
+                      className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+                    />
+                    <span className='text-sm font-medium text-gray-700'>Free Entry (no ticket required)</span>
+                  </label>
+                </div>
+
+                {!formData.isFree && (
                   <FormInput
                     label='Ticket URL'
                     type='url'
@@ -299,19 +456,19 @@ function AdminShowsContent() {
                     placeholder='https://tickets.com/event/... (optional)'
                     disabled={submitting}
                   />
-                </div>
-              )}
+                )}
 
-              <div className='mt-4'>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder='Additional show details (optional)...'
-                  rows={3}
-                  disabled={submitting}
-                  className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed'
-                />
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder='Additional show details (optional)...'
+                    rows={3}
+                    disabled={submitting}
+                    className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed'
+                  />
+                </div>
               </div>
             </FormSection>
 
@@ -364,13 +521,13 @@ function AdminShowsContent() {
                           {formatShowDate(show.date)}
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                          {show.venue}
+                          {show.venue.name}
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {show.city}
-                          {show.state && `, ${show.state}`}
+                          {show.venue.city}
+                          {show.venue.state && `, ${show.venue.state}`}
                           <br />
-                          <span className='text-xs'>{show.country}</span>
+                          <span className='text-xs'>{show.venue.country}</span>
                         </td>
                         <td className='px-6 py-4 text-sm text-gray-500'>
                           {show.ticketUrl ? (
@@ -388,7 +545,7 @@ function AdminShowsContent() {
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap text-sm'>
                           <button
-                            onClick={() => handleDelete(show.id, show.venue)}
+                            onClick={() => handleDelete(show.id, show.venue.name)}
                             className='text-red-600 hover:text-red-900 font-medium'
                           >
                             Delete

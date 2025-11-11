@@ -39,6 +39,9 @@ export default async function LivePage() {
         gte: new Date(), // Only show upcoming dates
       },
     },
+    include: {
+      venue: true,
+    },
     orderBy: {
       date: 'asc',
     },

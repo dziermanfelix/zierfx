@@ -7,14 +7,55 @@ export async function POST(request: NextRequest) {
     // Ensure user is admin
     await requireAdmin();
     const body = await request.json();
-    const { date, time, endTime, venue, address, city, state, zipCode, country, ticketUrl, isFree, mapsUrl, description } = body;
+    const { date, time, endTime, venueId, venue, city, state, country, ticketUrl, isFree, description } = body;
 
     // Validate required fields
-    if (!date || !time || !venue || !city || !country) {
+    if (!date || !time) {
       return NextResponse.json(
-        { error: 'Missing required fields: date, time, venue, city, and country are required' },
+        { error: 'Missing required fields: date and time are required' },
         { status: 400 }
       );
+    }
+
+    // Determine or create venue
+    let finalVenueId: number;
+    
+    if (venueId) {
+      // Use existing venue
+      finalVenueId = venueId;
+    } else {
+      // Create or find venue from provided details
+      if (!venue || !city || !country) {
+        return NextResponse.json(
+          { error: 'Missing required venue fields: venue name, city, and country are required' },
+          { status: 400 }
+        );
+      }
+
+      // Try to find existing venue or create new one
+      const existingVenue = await db.venue.findUnique({
+        where: {
+          name_city_country: {
+            name: venue,
+            city,
+            country,
+          },
+        },
+      });
+
+      if (existingVenue) {
+        finalVenueId = existingVenue.id;
+      } else {
+        const newVenue = await db.venue.create({
+          data: {
+            name: venue,
+            city,
+            state: state || null,
+            country,
+          },
+        });
+        finalVenueId = newVenue.id;
+      }
     }
 
     // Combine date and time into a single DateTime
@@ -33,16 +74,13 @@ export async function POST(request: NextRequest) {
       data: {
         date: showDate,
         endTime: showEndTime,
-        venue,
-        address: address || null,
-        city,
-        state: state || null,
-        zipCode: zipCode || null,
-        country,
+        venueId: finalVenueId,
         ticketUrl: ticketUrl || null,
         isFree: isFree || false,
-        mapsUrl: mapsUrl || null,
         description: description || null,
+      },
+      include: {
+        venue: true,
       },
     });
 
@@ -65,6 +103,9 @@ export async function GET(request: NextRequest) {
     // Ensure user is admin
     await requireAdmin();
     const shows = await db.show.findMany({
+      include: {
+        venue: true,
+      },
       orderBy: {
         date: 'asc',
       },

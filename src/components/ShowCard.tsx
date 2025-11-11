@@ -1,24 +1,22 @@
 'use client';
 
-import { Show } from '@prisma/client';
+import { Show, Venue } from '@prisma/client';
+
+type ShowWithVenue = Show & {
+  venue: Venue;
+};
 
 interface ShowCardProps {
-  show: Show;
+  show: ShowWithVenue;
 }
 
 // Build a Google Maps search URL from show details
-function buildMapsUrl(show: Show): string {
-  if (show.mapsUrl) {
-    return show.mapsUrl;
-  }
-
+function buildMapsUrl(venue: Venue): string {
   // Build address string from components
-  const parts = [show.venue];
-  if (show.address) parts.push(show.address);
-  parts.push(show.city);
-  if (show.state) parts.push(show.state);
-  if (show.zipCode) parts.push(show.zipCode);
-  parts.push(show.country);
+  const parts = [venue.name];
+  parts.push(venue.city);
+  if (venue.state) parts.push(venue.state);
+  parts.push(venue.country);
 
   const query = parts.join(', ');
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
@@ -44,13 +42,13 @@ export default function ShowCard({ show }: ShowCardProps) {
     timeDisplay = `${formattedTime} - ${formattedEndTime}`;
   }
 
-  const mapsUrl = buildMapsUrl(show);
+  const mapsUrl = buildMapsUrl(show.venue);
 
   // Build location string
-  const locationParts = [show.city];
-  if (show.state) locationParts.push(show.state);
+  const locationParts = [show.venue.city];
+  if (show.venue.state) locationParts.push(show.venue.state);
   const location = locationParts.join(', ');
-  const fullLocation = `${location} • ${show.country}`;
+  const fullLocation = `${location} • ${show.venue.country}`;
 
   return (
     <div className='border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800 dark:border-gray-700'>
@@ -72,7 +70,7 @@ export default function ShowCard({ show }: ShowCardProps) {
         <div className='flex-1 min-w-0'>
           <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4'>
             <div className='flex-1 min-w-0'>
-              <h3 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1'>{show.venue}</h3>
+              <h3 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1'>{show.venue.name}</h3>
               <div className='flex items-start gap-2 text-gray-600 dark:text-gray-400 mb-2'>
                 <svg
                   className='w-5 h-5 flex-shrink-0 mt-0.5'
@@ -152,7 +150,7 @@ export default function ShowCard({ show }: ShowCardProps) {
                   <h4 className='text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5'>
                     Location
                   </h4>
-                  <p className='text-gray-900 dark:text-gray-100 font-semibold'>{show.venue}</p>
+                  <p className='text-gray-900 dark:text-gray-100 font-semibold'>{show.venue.name}</p>
                   <p className='text-gray-600 dark:text-gray-400 text-sm'>{fullLocation}</p>
                 </div>
               </div>
