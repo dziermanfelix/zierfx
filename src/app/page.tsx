@@ -5,10 +5,15 @@ import Link from 'next/link';
 import ConnectSection from '@/components/ConnectSection';
 import RecentReleasesGrid from '@/components/RecentReleasesGrid';
 import StructuredData from '@/components/StructuredData';
+import { getAlbumFilterForUser } from '@/utils/album-filters';
 
 export default async function Home() {
+  // Get album filter based on user authentication
+  const albumFilter = await getAlbumFilterForUser();
+
   // Get recent albums (latest 6)
   const recentAlbums = await db.album.findMany({
+    where: albumFilter,
     include: {
       artist: true,
       tracks: true,

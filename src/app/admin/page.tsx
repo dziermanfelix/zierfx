@@ -15,6 +15,7 @@ interface DashboardStats {
     artist: { name: string; slug: string };
     releaseDate: string;
     trackCount: number;
+    adminOnly: boolean;
   }>;
 }
 
@@ -321,7 +322,16 @@ function AdminDashboardContent() {
                 <tbody className='bg-white divide-y divide-gray-200'>
                   {stats.recentAlbums.map((album) => (
                     <tr key={album.id} className='hover:bg-gray-50'>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{album.name}</td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
+                        <div className='flex items-center gap-2'>
+                          {album.name}
+                          {album.adminOnly && (
+                            <span className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800'>
+                              Admin Only
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{album.artist.name}</td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                         {new Date(album.releaseDate).toLocaleDateString()}

@@ -3,6 +3,7 @@ import { db } from '@/lib/prisma';
 import { getTrackLength, makeAlbumArtworkFileName, makeTrackFileName } from '@/utils/files';
 import { saveFile } from '@/lib/storage';
 import { slugify } from '@/utils/slugify';
+import { Prisma } from '@prisma/client';
 
 // Note: Large file upload limits are configured in vercel.json and next.config.ts
 // Vercel Pro/Enterprise plans support up to 100MB request bodies
@@ -13,6 +14,7 @@ export async function POST(req: NextRequest) {
   const artistString = formData.get('artist') as string;
   const albumString = formData.get('album') as string;
   const releaseDate = formData.get('releaseDate') as string;
+  const adminOnly = formData.get('adminOnly') === 'true';
 
   const artistSlug = slugify(artistString);
   const albumSlug = slugify(albumString);
@@ -84,10 +86,11 @@ export async function POST(req: NextRequest) {
       name: albumString,
       releaseDate: new Date(releaseDate),
       artworkUrl,
+      adminOnly,
       artistId: artist.id,
-      tracks: { create: tracksToCreate },
       slug: albumSlug,
-    },
+      tracks: { create: tracksToCreate },
+    } as Prisma.AlbumUncheckedCreateInput,
   });
 
   return NextResponse.json({ success: true, albumId: album.id });

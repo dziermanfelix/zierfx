@@ -32,8 +32,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Get all albums with their artists
+  // Get all non-admin-only albums with their artists (only public albums appear in sitemap)
   const albums = await db.album.findMany({
+    where: {
+      adminOnly: false,
+    },
     include: {
       artist: true,
     },

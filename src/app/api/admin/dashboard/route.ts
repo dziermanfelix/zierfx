@@ -40,6 +40,7 @@ export async function GET() {
       artist: album.artist,
       releaseDate: album.releaseDate.toISOString(),
       trackCount: album.tracks.length,
+      adminOnly: album.adminOnly,
     }));
 
     return NextResponse.json({

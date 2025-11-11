@@ -24,7 +24,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.19.0",
     "@supabase/supabase-js": "^2.52.1",
     "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",

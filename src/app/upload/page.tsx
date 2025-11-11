@@ -26,6 +26,7 @@ function UploadPageContent() {
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
+  const [adminOnly, setAdminOnly] = useState(false);
   const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<TrackItemData[]>([{ name: '', file: null }]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -130,6 +131,7 @@ function UploadPageContent() {
       formData.append('artist', artist);
       formData.append('album', album);
       formData.append('releaseDate', releaseDate);
+      formData.append('adminOnly', String(adminOnly));
 
       if (artwork) {
         formData.append('artwork', artwork);
@@ -287,6 +289,20 @@ function UploadPageContent() {
                 required
                 disabled={uploading}
               />
+
+              <div className='flex items-center space-x-2'>
+                <input
+                  type='checkbox'
+                  id='adminOnly'
+                  checked={adminOnly}
+                  onChange={(e) => setAdminOnly(e.target.checked)}
+                  disabled={uploading}
+                  className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+                />
+                <label htmlFor='adminOnly' className='text-sm font-medium text-gray-700'>
+                  Admin Only (only visible to logged-in administrators)
+                </label>
+              </div>
             </div>
           </FormSection>
 

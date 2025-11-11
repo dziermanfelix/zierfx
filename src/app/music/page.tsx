@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
 import Library from '@/components/Library';
+import { getAlbumFilterForUser } from '@/utils/album-filters';
 
 export const metadata: Metadata = {
   title: 'Music Library | Zierman Felix',
@@ -32,9 +33,13 @@ export const metadata: Metadata = {
 };
 
 export default async function LibraryPage() {
+  // Get album filter based on user authentication
+  const albumFilter = await getAlbumFilterForUser();
+
   const artists = await db.artist.findMany({
     include: {
       albums: {
+        where: albumFilter,
         include: {
           tracks: true,
         },

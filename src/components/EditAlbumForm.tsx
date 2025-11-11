@@ -33,6 +33,7 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
   const [saving, setSaving] = useState(false);
   const [albumName, setAlbumName] = useState(album.name);
   const [releaseDate, setReleaseDate] = useState(album.releaseDate.toString().slice(0, 10));
+  const [adminOnly, setAdminOnly] = useState(album.adminOnly);
   const [artwork, setArtwork] = useState<File | null>(null);
   const [tracks, setTracks] = useState<EditableTrack[]>(
     album.tracks.map((track) => ({
@@ -104,6 +105,7 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
       formData.append('artistName', artist.name);
       formData.append('albumName', albumName);
       formData.append('releaseDate', String(releaseDate));
+      formData.append('adminOnly', String(adminOnly));
 
       if (artwork) {
         formData.append('artwork', artwork);
@@ -210,6 +212,20 @@ export default function EditAlbumForm({ album, artist, onSaveSuccess }: AlbumInf
               required
               disabled={saving}
             />
+
+            <div className='flex items-center space-x-2'>
+              <input
+                type='checkbox'
+                id='adminOnly'
+                checked={adminOnly}
+                onChange={(e) => setAdminOnly(e.target.checked)}
+                disabled={saving}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+              />
+              <label htmlFor='adminOnly' className='text-sm font-medium text-gray-700'>
+                Admin Only (only visible to logged-in administrators)
+              </label>
+            </div>
           </div>
 
           {/* Artwork */}

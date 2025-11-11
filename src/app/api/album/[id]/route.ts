@@ -11,6 +11,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   const artistName = formData.get('artistName')?.toString();
   const albumName = formData.get('albumName')?.toString();
   const releaseDate = formData.get('releaseDate') as string;
+  const adminOnly = formData.get('adminOnly')?.toString() === 'true';
   const artwork = formData.get('artwork') as File | null;
 
   const tracks = [];
@@ -49,11 +50,13 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     });
   }
 
-  const updateData: { name?: string; releaseDate?: Date; artworkUrl?: string } = {};
+  const updateData: { name?: string; releaseDate?: Date; artworkUrl?: string; adminOnly?: boolean } = {};
 
   if (albumName) updateData.name = albumName;
 
   if (releaseDate) updateData.releaseDate = new Date(releaseDate);
+
+  updateData.adminOnly = adminOnly;
 
   if (artwork instanceof File && artwork.size > 0) {
     const existingAlbum = await db.album.findUnique({
