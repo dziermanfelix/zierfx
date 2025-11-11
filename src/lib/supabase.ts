@@ -18,7 +18,7 @@ export const supabaseAdmin = SUPABASE_SERVICE_ROLE_KEY
 export async function saveFileSupabase(file: File, name: string) {
   // Use admin client if available (server-side), otherwise use regular client
   const client = supabaseAdmin || supabase;
-  
+
   const { error } = await client.storage.from(SUPABASE_BUCKET).upload(name, file, {
     upsert: true,
   });
@@ -31,7 +31,7 @@ export async function saveFileSupabase(file: File, name: string) {
 export async function deleteFileSupabase(path: string) {
   // Use admin client if available (server-side), otherwise use regular client
   const client = supabaseAdmin || supabase;
-  
+
   const fileName = extractFilenameFromPublicUrl(path);
   const { error } = await client.storage.from(SUPABASE_BUCKET).remove([fileName]);
   if (error) throw error;
