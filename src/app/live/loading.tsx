@@ -5,7 +5,6 @@ export default function Loading() {
         {/* Header */}
         <div className='mb-8'>
           <h1 className='text-4xl font-bold mb-2'>Live Shows</h1>
-          <p className='text-gray-600 dark:text-gray-400'>Catch us live at these upcoming shows</p>
         </div>
 
         {/* Loading State */}
