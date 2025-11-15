@@ -5,6 +5,7 @@ import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
 import ShowCard from '@/components/ShowCard';
 import ConnectSection from '@/components/ConnectSection';
+import { LIVE_PAGE_VIDEO_1_URL, LIVE_PAGE_VIDEO_2_URL } from '@/config/links';
 
 export const metadata: Metadata = {
   title: 'Live Shows & Concerts | Zierman Felix',
@@ -78,7 +79,7 @@ export default async function LivePage() {
             <div className='aspect-video w-full'>
               <iframe
                 className='w-full h-full rounded-lg shadow-lg'
-                src='https://www.youtube.com/embed/0S93YELBZ50'
+                src={LIVE_PAGE_VIDEO_1_URL}
                 title='YouTube video player'
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                 allowFullScreen
@@ -89,7 +90,7 @@ export default async function LivePage() {
             <div className='aspect-video w-full'>
               <iframe
                 className='w-full h-full rounded-lg shadow-lg'
-                src='https://www.youtube.com/embed/g_c7m4SFNQU'
+                src={LIVE_PAGE_VIDEO_2_URL}
                 title='YouTube video player'
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                 allowFullScreen

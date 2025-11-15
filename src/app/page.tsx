@@ -6,7 +6,7 @@ import ConnectSection from '@/components/ConnectSection';
 import RecentReleasesGrid from '@/components/RecentReleasesGrid';
 import StructuredData from '@/components/StructuredData';
 import { getAlbumFilterForUser } from '@/utils/album-filters';
-import { YOUTUBE_VIDEO_URL } from '@/config/featured-video';
+import { FEATURED_VIDEO_URL } from '@/config/links';
 
 export default async function Home() {
   // Get album filter based on user authentication
@@ -88,7 +88,7 @@ export default async function Home() {
               <iframe
                 width='100%'
                 height='100%'
-                src={YOUTUBE_VIDEO_URL}
+                src={FEATURED_VIDEO_URL}
                 title='YouTube video player'
                 frameBorder='0'
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
