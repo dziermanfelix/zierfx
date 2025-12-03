@@ -12,6 +12,7 @@
     "generate": "npx prisma generate --no-hints",
     "migrate-dev": "npx prisma migrate dev",
     "migrate-deploy": "npx prisma migrate deploy",
+    "restore-local-db": "scripts/backup/restore-local-from-prod.sh",
     "studio": "npx prisma studio",
     "clean": "ts-node prisma/clean.ts",
     "seed": "ts-node prisma/seed.ts",
