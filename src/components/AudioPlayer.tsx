@@ -91,7 +91,9 @@ export default function AudioPlayer({ track, onEnded, onNext, onPrevious }: Audi
 
   useEffect(() => {
     if (!audioRef.current || !track.audioUrl) return;
-    audioRef.current.src = track.audioUrl;
+    // Use the streaming API endpoint to proxy Supabase requests with signed URLs
+    const streamUrl = `/api/stream?url=${encodeURIComponent(track.audioUrl)}`;
+    audioRef.current.src = streamUrl;
     audioRef.current.load();
     setProgress(0);
     setIsReady(false);
