@@ -4,7 +4,6 @@ import { Metadata } from 'next';
 import { db } from '@/lib/prisma';
 import { Suspense } from 'react';
 import ShowCard from '@/components/ShowCard';
-import ConnectSection from '@/components/ConnectSection';
 import { LIVE_PAGE_VIDEO_1_URL, LIVE_PAGE_VIDEO_2_URL } from '@/config/links';
 
 export const metadata: Metadata = {
@@ -97,11 +96,6 @@ export default async function LivePage() {
               />
             </div>
           </div>
-        </div>
-
-        {/* Connect Section */}
-        <div className='mt-16 border-t border-gray-200 dark:border-gray-800 pt-12'>
-          <ConnectSection />
         </div>
       </div>
     </main>
