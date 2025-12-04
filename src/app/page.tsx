@@ -2,17 +2,14 @@ export const dynamic = 'force-dynamic';
 
 import { db } from '@/lib/prisma';
 import Link from 'next/link';
-import ConnectSection from '@/components/ConnectSection';
 import RecentReleasesGrid from '@/components/RecentReleasesGrid';
 import StructuredData from '@/components/StructuredData';
 import { getAlbumFilterForUser } from '@/utils/album-filters';
 import { FEATURED_VIDEO_URL } from '@/config/links';
 
 export default async function Home() {
-  // Get album filter based on user authentication
   const albumFilter = await getAlbumFilterForUser();
 
-  // Get recent albums (latest 6)
   const recentAlbums = await db.album.findMany({
     where: albumFilter,
     include: {
@@ -88,13 +85,6 @@ export default async function Home() {
                 allowFullScreen
               ></iframe>
             </div>
-          </div>
-        </section>
-
-        {/* Connect Section */}
-        <section className='py-16 px-4 sm:px-8'>
-          <div className='max-w-4xl mx-auto'>
-            <ConnectSection />
           </div>
         </section>
       </main>
