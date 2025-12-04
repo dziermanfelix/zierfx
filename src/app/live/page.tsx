@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     'concert videos',
   ],
   openGraph: {
-    title: 'Live Shows & Concerts | Zierman Felix',
+    title: 'Live  | Zierman Felix',
     description:
       'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos.',
     type: 'website',

@@ -7,7 +7,7 @@ import Library from '@/components/Library';
 import { getAlbumFilterForUser } from '@/utils/album-filters';
 
 export const metadata: Metadata = {
-  title: 'Music Library | Zierman Felix',
+  title: 'Music | Zierman Felix',
   description:
     'Browse the complete music library of Zierman Felix. Stream and download albums, tracks, and discover new music from Yeebob Records.',
   keywords: [
