@@ -15,13 +15,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Zierman Felix - Music & Live Shows | Yeebob Records',
+    default: 'Zierman Felix - Music',
     template: '%s | Zierman Felix',
   },
   description:
     'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
   keywords: [
     'Zierman Felix',
+    'Zierfx',
     'Dustyn Zierman-Felix',
     'Yeebob Records',
     'music',
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://ziermanfelix.com',
     siteName: 'Zierman Felix',
-    title: 'Zierman Felix - Music & Live Shows | Yeebob Records',
+    title: 'Zierman Felix - Music',
     description:
       'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
     images: [
@@ -77,7 +78,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code', // Replace with actual verification code
+    google: 'your-google-verification-code',
   },
 };
 
