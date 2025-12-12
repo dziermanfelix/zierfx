@@ -16,24 +16,28 @@ export const supabaseAdmin = SUPABASE_SERVICE_ROLE_KEY
   : null;
 
 export async function saveFileSupabase(file: File, name: string) {
-  // Use admin client if available (server-side), otherwise use regular client
-  const client = supabaseAdmin || supabase;
+  // Always use admin client for server-side operations (bypasses RLS)
+  if (!supabaseAdmin) {
+    throw new Error('Supabase admin client not configured. SUPABASE_SERVICE_ROLE_KEY is required for file uploads.');
+  }
 
-  const { error } = await client.storage.from(SUPABASE_BUCKET).upload(name, file, {
+  const { error } = await supabaseAdmin.storage.from(SUPABASE_BUCKET).upload(name, file, {
     upsert: true,
   });
   if (error) throw error;
 
-  const { data } = client.storage.from(SUPABASE_BUCKET).getPublicUrl(name);
+  const { data } = supabaseAdmin.storage.from(SUPABASE_BUCKET).getPublicUrl(name);
   return data.publicUrl;
 }
 
 export async function deleteFileSupabase(path: string) {
-  // Use admin client if available (server-side), otherwise use regular client
-  const client = supabaseAdmin || supabase;
+  // Always use admin client for server-side operations (bypasses RLS)
+  if (!supabaseAdmin) {
+    throw new Error('Supabase admin client not configured. SUPABASE_SERVICE_ROLE_KEY is required for file deletions.');
+  }
 
   const fileName = extractFilenameFromPublicUrl(path);
-  const { error } = await client.storage.from(SUPABASE_BUCKET).remove([fileName]);
+  const { error } = await supabaseAdmin.storage.from(SUPABASE_BUCKET).remove([fileName]);
   if (error) throw error;
 }
 
