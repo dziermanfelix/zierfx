@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SUPABASE_BUCKET, USE_SUPABASE_STORAGE } from '@/env';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin, supabase } from '@/lib/supabase';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -21,11 +21,9 @@ export async function GET(req: NextRequest) {
       const storagePath = extractPathFromPublicUrl(url);
 
       // Generate a signed URL (valid for 1 hour for streaming)
-      // Use admin client to bypass RLS (this is a server-side API route)
-      if (!supabaseAdmin) {
-        return NextResponse.json({ error: 'Supabase admin client not configured' }, { status: 500 });
-      }
-      const { data, error } = await supabaseAdmin.storage.from(SUPABASE_BUCKET!).createSignedUrl(storagePath, 3600); // 1 hour expiry
+      // Use admin client if available (bypasses RLS), otherwise fall back to regular client
+      const client = supabaseAdmin || supabase;
+      const { data, error } = await client.storage.from(SUPABASE_BUCKET!).createSignedUrl(storagePath, 3600); // 1 hour expiry
 
       if (error || !data) {
         console.error('Error creating signed URL:', error);
