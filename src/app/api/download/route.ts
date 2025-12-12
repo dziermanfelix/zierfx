@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { SUPABASE_BUCKET, USE_SUPABASE_STORAGE } from '@/env';
 import path from 'path';
 import fs from 'fs/promises';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get('url');
@@ -53,7 +53,12 @@ export async function GET(req: NextRequest) {
 }
 
 async function getSignedUrl(storagePath: string): Promise<string | null> {
-  const { data, error } = await supabase.storage.from(SUPABASE_BUCKET!).createSignedUrl(storagePath, 60);
+  // Use admin client to bypass RLS (this is a server-side API route)
+  if (!supabaseAdmin) {
+    console.error('Supabase admin client not configured');
+    return null;
+  }
+  const { data, error } = await supabaseAdmin.storage.from(SUPABASE_BUCKET!).createSignedUrl(storagePath, 60);
 
   if (!data || error) {
     console.error('Signed URL error:', error);
