@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     description:
       'Browse the complete music library of Zierman Felix. Stream and download albums, tracks, and discover new music from Yeebob Records.',
     type: 'website',
-    url: 'https://ziermanfelix.com/music',
+    url: 'https://zierfx.com/music',
   },
   alternates: {
-    canonical: 'https://ziermanfelix.com/music',
+    canonical: 'https://zierfx.com/music',
   },
 };
 

@@ -15,13 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Zierman Felix - Music',
-    template: '%s | Zierman Felix',
+    default: 'Zierfx',
+    template: '%s | Zierfx',
   },
   description:
     'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
   keywords: [
-    'Zierman Felix',
     'Zierfx',
     'Dustyn Zierman-Felix',
     'Yeebob Records',
@@ -30,24 +29,24 @@ export const metadata: Metadata = {
     'concerts',
     'original music',
   ],
-  authors: [{ name: 'Zierman Felix' }],
-  creator: 'Zierman Felix',
+  authors: [{ name: 'Zierfx' }],
+  creator: 'Zierfx',
   publisher: 'Yeebob Records',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://ziermanfelix.com'),
+  metadataBase: new URL('https://zierfx.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://ziermanfelix.com',
-    siteName: 'Zierman Felix',
-    title: 'Zierman Felix - Music',
+    url: 'https://zierfx.com',
+    siteName: 'Zierfx',
+    title: 'Zierfx',
     description:
       'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
     images: [
@@ -55,16 +54,9 @@ export const metadata: Metadata = {
         url: '/Logo_BlackTransparent.png',
         width: 1200,
         height: 630,
-        alt: 'Zierman Felix - Yeebob Records',
+        alt: 'Zierfx - Yeebob Records',
       },
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Zierman Felix - Music & Live Shows | Yeebob Records',
-    description: 'Official website of Zierman Felix, featuring original music, live shows, and latest releases.',
-    images: ['/Logo_BlackTransparent.png'],
-    creator: '@ziermanfelix',
   },
   robots: {
     index: true,

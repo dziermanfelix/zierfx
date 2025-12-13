@@ -37,11 +37,11 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
       title,
       description,
       type: 'music.album',
-      url: `https://ziermanfelix.com/albums/${artist.slug}/${album.slug}`,
+      url: `https://zierfx.com/albums/${artist.slug}/${album.slug}`,
       images: album.artworkUrl
         ? [
             {
-              url: `https://ziermanfelix.com${album.artworkUrl}`,
+              url: `https://zierfx.com${album.artworkUrl}`,
               width: 1200,
               height: 1200,
               alt: `${album.name} by ${artist.name}`,
@@ -53,10 +53,10 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
       card: 'summary_large_image',
       title,
       description,
-      images: album.artworkUrl ? [`https://ziermanfelix.com${album.artworkUrl}`] : [],
+      images: album.artworkUrl ? [`https://zierfx.com${album.artworkUrl}`] : [],
     },
     alternates: {
-      canonical: `https://ziermanfelix.com/albums/${artist.slug}/${album.slug}`,
+      canonical: `https://zierfx.com/albums/${artist.slug}/${album.slug}`,
     },
   };
 }

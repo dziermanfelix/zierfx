@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     description:
       'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos.',
     type: 'website',
-    url: 'https://ziermanfelix.com/live',
+    url: 'https://zierfx.com/live',
   },
   alternates: {
-    canonical: 'https://ziermanfelix.com/live',
+    canonical: 'https://zierfx.com/live',
   },
 };
 

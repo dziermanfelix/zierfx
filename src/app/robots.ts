@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/login', '/admin', '/_next/', '/private/'],
     },
-    sitemap: 'https://ziermanfelix.com/sitemap.xml',
+    sitemap: 'https://zierfx.com/sitemap.xml',
   };
 }
