@@ -2,11 +2,10 @@ export default function Loading() {
   return (
     <main className='min-h-screen'>
       {/* Hero Section - Static */}
-      <section className='relative bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white py-24 px-4 sm:px-8'>
+      <section className='relative bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white py-12 px-4 sm:px-8'>
         <div className='max-w-6xl mx-auto'>
-          <div className='text-center space-y-6'>
+          <div className='text-center space-y-4'>
             <h1 className='text-5xl sm:text-7xl font-bold tracking-tight'>Zierfx</h1>
-            <p className='text-xl sm:text-2xl font-light text-gray-300'>Yeebob Records</p>
             <p className='text-lg sm:text-xl max-w-2xl mx-auto text-gray-200'>The music of Dustyn Zierman-Felix.</p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center pt-6'>
               <div className='bg-white/20 px-8 py-3 rounded-full animate-pulse'></div>
