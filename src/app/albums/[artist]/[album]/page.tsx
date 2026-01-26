@@ -24,15 +24,15 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
     };
   }
 
-  const title = `${album.name} by ${artist.name} | Zierman Felix`;
+  const title = `${album.name} by ${artist.name} | Zierfx`;
   const description = `Listen to ${album.name} by ${artist.name}. Released ${
     album.releaseDate ? new Date(album.releaseDate).toLocaleDateString() : 'TBA'
-  }. Stream and download on Zierman Felix's official website.`;
+  }. Stream and download on Zierfx's official website.`;
 
   return {
     title,
     description,
-    keywords: [album.name, artist.name, 'Zierman Felix', 'music', 'album', 'streaming', 'download'],
+    keywords: [album.name, artist.name, 'Zierfx', 'music', 'album', 'streaming', 'download'],
     openGraph: {
       title,
       description,

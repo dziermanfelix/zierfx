@@ -18,17 +18,8 @@ export const metadata: Metadata = {
     default: 'Zierfx',
     template: '%s | Zierfx',
   },
-  description:
-    'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
-  keywords: [
-    'Zierfx',
-    'Dustyn Zierman-Felix',
-    'Yeebob Records',
-    'music',
-    'live shows',
-    'concerts',
-    'original music',
-  ],
+  description: 'Official website of Zierx, featuring original music, live shows, and latest releases',
+  keywords: ['Zierfx', 'Dustyn Zierman-Felix', 'Yeebob Records', 'music', 'live shows', 'concerts', 'original music'],
   authors: [{ name: 'Zierfx' }],
   creator: 'Zierfx',
   publisher: 'Yeebob Records',
@@ -47,8 +38,7 @@ export const metadata: Metadata = {
     url: 'https://zierfx.com',
     siteName: 'Zierfx',
     title: 'Zierfx',
-    description:
-      'Official website of Zierman Felix, featuring original music, live shows, and latest releases. Discover the music of Dustyn Zierman-Felix on Yeebob Records.',
+    description: 'Official website of Zierfx, featuring original music, live shows, and latest releases.',
     images: [
       {
         url: '/Logo_BlackTransparent.png',

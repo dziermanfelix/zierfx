@@ -12,7 +12,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         return {
           '@context': 'https://schema.org',
           '@type': 'Person',
-          name: 'Zierman Felix',
+          name: 'Zierfx',
           alternateName: 'Dustyn Zierman-Felix',
           description: 'Musician and recording artist',
           url: 'https://zierfx.com',
@@ -28,7 +28,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         return {
           '@context': 'https://schema.org',
           '@type': 'MusicGroup',
-          name: 'Zierman Felix',
+          name: 'Zierfx',
           description: 'Musical artist and performer',
           url: 'https://zierfx.com',
           genre: ['Alternative', 'Indie', 'Rock'],
@@ -47,10 +47,10 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
               }
             : {
                 '@type': 'Person',
-                name: 'Zierman Felix',
+                name: 'Zierfx',
               },
           datePublished: data.releaseDate,
-          description: data.artist ? `Album by ${data.artist.name}` : 'Album by Zierman Felix',
+          description: data.artist ? `Album by ${data.artist.name}` : 'Album by Zierfx',
           url: data.artist
             ? `https://zierfx.com/albums/${data.artist.slug}/${data.slug}`
             : `https://zierfx.com/albums/zierman-felix/${data.slug}`,
@@ -71,7 +71,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
               }
             : {
                 '@type': 'Person',
-                name: 'Zierman Felix',
+                name: 'Zierfx',
               },
           inAlbum: data.album
             ? {
@@ -103,7 +103,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           },
           performer: {
             '@type': 'Person',
-            name: 'Zierman Felix',
+            name: 'Zierfx',
           },
           eventStatus: 'https://schema.org/EventScheduled',
           eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',

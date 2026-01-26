@@ -23,7 +23,7 @@ export default function Navigation() {
         >
           <Image
             src='/Logo_BlackTransparent.png'
-            alt='Zierman Felix Logo'
+            alt='Zierfx Logo'
             width={48}
             height={48}
             className='object-contain p-1'

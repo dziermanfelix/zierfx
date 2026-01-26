@@ -7,11 +7,11 @@ import Library from '@/components/Library';
 import { getAlbumFilterForUser } from '@/utils/album-filters';
 
 export const metadata: Metadata = {
-  title: 'Music | Zierman Felix',
+  title: 'Music | Zierfx',
   description:
-    'Browse the complete music library of Zierman Felix. Stream and download albums, tracks, and discover new music from Yeebob Records.',
+    'Browse the complete music library of Zierfx. Stream and download albums, tracks, and discover new music from Yeebob Records.',
   keywords: [
-    'Zierman Felix music',
+    'Zierfx music',
     'music library',
     'albums',
     'tracks',
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     'music collection',
   ],
   openGraph: {
-    title: 'Music Library | Zierman Felix',
+    title: 'Music Library | Zierfx',
     description:
-      'Browse the complete music library of Zierman Felix. Stream and download albums, tracks, and discover new music from Yeebob Records.',
+      'Browse the complete music library of Zierfx. Stream and download albums, tracks, and discover new music from Yeebob Records.',
     type: 'website',
     url: 'https://zierfx.com/music',
   },

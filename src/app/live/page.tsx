@@ -7,11 +7,10 @@ import ShowCard from '@/components/ShowCard';
 import { LIVE_PAGE_VIDEO_1_URL, LIVE_PAGE_VIDEO_2_URL } from '@/config/links';
 
 export const metadata: Metadata = {
-  title: 'Live Shows & Concerts | Zierman Felix',
-  description:
-    'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos. Book tickets for live shows.',
+  title: 'Live Shows & Concerts | Zierfx',
+  description: 'See Zierfx live in concert. Check out upcoming tour dates, live performances, and concert videos.',
   keywords: [
-    'Zierman Felix live',
+    'Zierfx live',
     'concerts',
     'tour dates',
     'live shows',
@@ -21,9 +20,8 @@ export const metadata: Metadata = {
     'concert videos',
   ],
   openGraph: {
-    title: 'Live  | Zierman Felix',
-    description:
-      'See Zierman Felix live in concert. Check out upcoming tour dates, live performances, and concert videos.',
+    title: 'Live  | Zierfx',
+    description: 'See Zierfx live in concert. Check out upcoming tour dates, live performances, and concert videos.',
     type: 'website',
     url: 'https://zierfx.com/live',
   },
