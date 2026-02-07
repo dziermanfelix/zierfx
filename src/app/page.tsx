@@ -5,7 +5,6 @@ import Link from 'next/link';
 import RecentReleasesGrid from '@/components/RecentReleasesGrid';
 import StructuredData from '@/components/StructuredData';
 import { getAlbumFilterForUser } from '@/utils/album-filters';
-import { FEATURED_VIDEO_URL } from '@/config/links';
 
 export default async function Home() {
   const albumFilter = await getAlbumFilterForUser();
@@ -67,24 +66,6 @@ export default async function Home() {
                 <p className='text-lg'>New music coming soon...</p>
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Featured Video Section */}
-        <section className='py-16 px-4 sm:px-8 bg-gray-50 dark:bg-gray-900/50'>
-          <div className='max-w-4xl mx-auto'>
-            <h2 className='text-3xl sm:text-4xl font-bold text-center mb-8'>Featured Video</h2>
-            <div className='aspect-video w-full rounded-xl overflow-hidden shadow-2xl'>
-              <iframe
-                width='100%'
-                height='100%'
-                src={FEATURED_VIDEO_URL}
-                title='YouTube video player'
-                frameBorder='0'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                allowFullScreen
-              ></iframe>
-            </div>
           </div>
         </section>
       </main>
