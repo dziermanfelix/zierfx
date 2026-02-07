@@ -10,7 +10,6 @@ export default function Navigation() {
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Music', href: '/music' },
-    { name: 'Live', href: '/live' },
   ];
 
   return (

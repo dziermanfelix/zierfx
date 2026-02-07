@@ -90,25 +90,6 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           audio: data.audioUrl ? `https://zierfx.com${data.audioUrl}` : undefined,
         };
 
-      case 'Event':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Event',
-          name: data.title || `Live Show - ${data.venue}`,
-          startDate: data.date,
-          location: {
-            '@type': 'Place',
-            name: data.venue,
-            address: data.address,
-          },
-          performer: {
-            '@type': 'Person',
-            name: 'Zierfx',
-          },
-          eventStatus: 'https://schema.org/EventScheduled',
-          eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-        };
-
       default:
         return null;
     }
