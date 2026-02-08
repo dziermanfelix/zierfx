@@ -16,8 +16,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           alternateName: 'Dustyn Zierman-Felix',
           description: 'Musician and recording artist',
           url: 'https://zierfx.com',
-          sameAs: ['https://www.youtube.com/@ziermanfelix', 'https://www.instagram.com/ziermanfelix'],
-          jobTitle: 'Musician',
+          jobTitle: 'Musician/Producer',
           worksFor: {
             '@type': 'Organization',
             name: 'Yeebob Records',
@@ -32,7 +31,6 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           description: 'Musical artist and performer',
           url: 'https://zierfx.com',
           genre: ['Alternative', 'Indie', 'Rock'],
-          sameAs: ['https://www.youtube.com/@ziermanfelix', 'https://www.instagram.com/ziermanfelix'],
         };
 
       case 'MusicAlbum':

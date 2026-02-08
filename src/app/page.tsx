@@ -30,7 +30,7 @@ export default async function Home() {
           <div className='max-w-6xl mx-auto'>
             <div className='text-center space-y-4'>
               <h1 className='text-5xl sm:text-7xl font-bold tracking-tight'>Zierfx</h1>
-              <p className='text-lg sm:text-xl max-w-2xl mx-auto text-gray-200'>The music of Dustyn Zierman-Felix.</p>
+              <p className='text-lg sm:text-xl max-w-2xl mx-auto text-gray-200'>Yeebob Records</p>
               <div className='flex flex-col sm:flex-row gap-4 justify-center p-2'>
                 <Link
                   href='/music'
